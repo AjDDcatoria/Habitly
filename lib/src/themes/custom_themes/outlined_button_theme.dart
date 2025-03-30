@@ -19,6 +19,7 @@ class AppOutlinedButtonTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.borderRound),
       ),
+      side: BorderSide(color: AppColors.lightBorder),
     ),
   );
 }

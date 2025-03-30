@@ -32,4 +32,6 @@ class AppSizes {
 
   // Padding
   static const double paddingLg = 16.0;
+  static const double paddingXl = 32.0;
+  static const double padding2Xl = 42.0;
 }
