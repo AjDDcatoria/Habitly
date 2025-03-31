@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:habitly/src/common/social_account_buttons.dart';
+import 'package:habitly/src/common_widgets/social_account_buttons.dart';
+import 'package:habitly/src/components/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 
@@ -44,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "Start your habit journey with Habitly. it's quick.\neasy, and free!",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                _labeledInput(
+                labelInput(
                   context,
                   'Email',
                   TextField(
@@ -54,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                _labeledInput(
+                labelInput(
                   context,
                   'Password',
                   TextField(
@@ -156,17 +157,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Column _labeledInput(BuildContext context, String label, TextField input) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSizes.defaultBtwItems,
-      children: <Widget>[
-        Text(label, style: Theme.of(context).textTheme.bodyLarge),
-        input,
-      ],
     );
   }
 }
