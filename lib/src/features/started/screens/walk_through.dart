@@ -18,6 +18,7 @@ class WalkThrough extends StatelessWidget {
       ),
       bottomNavigationBar: BottomAppBar(
         color: AppColors.light,
+        height: 100.0,
         padding: EdgeInsets.all(0),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
