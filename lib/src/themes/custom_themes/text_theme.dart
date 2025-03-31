@@ -30,7 +30,6 @@ class AppTextTheme {
     titleMedium: TextStyle().copyWith(
       fontSize: AppSizes.fontMd,
       fontWeight: FontWeight.w500,
-      color: AppColors.textPrimary,
     ),
     titleSmall: TextStyle().copyWith(
       fontSize: AppSizes.fontMd,
