@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitly/src/common_widgets/social_account_buttons.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/images.dart';
 import 'package:habitly/src/constants/sizes.dart';
-import 'package:habitly/src/constants/svg.dart';
 import 'package:habitly/src/routes/routes_names.dart';
 import 'package:habitly/src/themes/theme.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -35,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                     "Let's dive in into your account",
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  _socialButtons(),
+                  socialAccountButtons(),
                   _controlButtons(context, buttonTheme),
                 ],
               ),
@@ -89,46 +88,6 @@ class WelcomeScreen extends StatelessWidget {
             onPressed: () => context.push(RouteNames.signin),
             style: buttonTheme.secondary.style,
             child: Text('Sign in'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Column _socialButtons() {
-    return Column(
-      spacing: AppSizes.defaultBtwItems,
-      children: [
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: SvgPicture.asset(Svgs.google, width: 24, height: 24),
-            label: Text('Continue with Google'),
-          ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: SvgPicture.asset(Svgs.apple, width: 24, height: 24),
-            label: Text('Continue with Apple'),
-          ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: SvgPicture.asset(Svgs.facebook, width: 24, height: 24),
-            label: Text('Continue with Facebook'),
-          ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: SvgPicture.asset(Svgs.instagram, width: 24, height: 24),
-            label: Text('Continue with Instagram'),
           ),
         ),
       ],
