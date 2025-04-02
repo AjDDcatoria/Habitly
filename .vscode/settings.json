@@ -1,0 +1,13 @@
+{
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "gitlens.views.scm.grouped.views": {
+        "repositories": true,
+        "searchAndCompare": true,
+        "launchpad": true
+    },
+    "editor.guides.highlightActiveIndentation": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": false,
+  "editor.guides.bracketPairsHorizontal": true
+}

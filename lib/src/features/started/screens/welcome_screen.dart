@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habitly/src/common_widgets/social_account_buttons.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/social_account_buttons.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/images.dart';
 import 'package:habitly/src/constants/sizes.dart';
@@ -34,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                     "Let's dive in into your account",
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  socialAccountButtons(),
+                  SocialAccountButtons(),
                   _controlButtons(context, buttonTheme),
                 ],
               ),

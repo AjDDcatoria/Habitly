@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/constants/strings/walkthrough.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
 import 'package:habitly/src/features/started/widgets/walk_through_page.dart';
 import 'package:habitly/src/routes/routes_names.dart';
 import 'package:habitly/src/themes/theme.dart';
@@ -85,48 +86,37 @@ class _WalkThroughState extends State<WalkThrough>
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.light,
-        height: 100.0,
-        padding: EdgeInsets.all(0),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: Colors.grey[300]!, width: 1.0),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSizes.defaultBtwItems,
-            children: [
-              if (_currentPageIndex < 2) ...[
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.go(RouteNames.welcome);
-                    },
-                    style: buttonTheme.secondary.style,
-                    child: Text("Skip"),
-                  ),
-                ),
-              ],
+      bottomNavigationBar: FooterAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: AppSizes.defaultBtwItems,
+          children: [
+            if (_currentPageIndex < 2) ...[
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_currentPageIndex < 2) {
-                      _updateCurrentPageIndex(_currentPageIndex + 1);
-                    } else {
-                      context.go(RouteNames.welcome);
-                    }
+                    context.go(RouteNames.welcome);
                   },
-                  child: Text(
-                    _currentPageIndex < 2 ? "Continue" : "Let's Get Started",
-                  ),
+                  style: buttonTheme.secondary.style,
+                  child: Text("Skip"),
                 ),
               ),
             ],
-          ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_currentPageIndex < 2) {
+                    _updateCurrentPageIndex(_currentPageIndex + 1);
+                  } else {
+                    context.go(RouteNames.welcome);
+                  }
+                },
+                child: Text(
+                  _currentPageIndex < 2 ? "Continue" : "Let's Get Started",
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:habitly/src/common_widgets/social_account_buttons.dart';
+import 'package:habitly/src/components/wide_container.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/social_account_buttons.dart';
+import 'package:habitly/src/components/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
-import 'package:habitly/src/components/label_input.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -45,20 +47,18 @@ class _SignInScreenState extends State<SignInScreen> {
                   "Sign in to access your personalized habit\ntracking experience.",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                labelInput(
-                  context,
-                  'Email',
-                  TextField(
+                LabelInput(
+                  label: 'Email',
+                  child: TextField(
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email_outlined),
                       hintText: 'Email',
                     ),
                   ),
                 ),
-                labelInput(
-                  context,
-                  'Password',
-                  TextField(
+                LabelInput(
+                  label: 'Password',
+                  child: TextField(
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock_open_sharp),
                       hintText: 'Password',
@@ -116,35 +116,15 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ],
                 ),
-                socialAccountButtons(),
+                SocialAccountButtons(),
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.light,
-        height: 100.0,
-        padding: EdgeInsets.all(0),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: Colors.grey[300]!, // Border color
-                width: 1.0, // Border thickness
-              ),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSizes.defaultBtwItems,
-            children: [
-              Expanded(
-                child: ElevatedButton(onPressed: () {}, child: Text("Sign in")),
-              ),
-            ],
-          ),
+      bottomNavigationBar: FooterAppBar(
+        child: WideContainer(
+          child: ElevatedButton(onPressed: () {}, child: Text('Sign in')),
         ),
       ),
     );
