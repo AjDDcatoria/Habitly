@@ -45,20 +45,18 @@ class _SignInScreenState extends State<SignInScreen> {
                   "Sign in to access your personalized habit\ntracking experience.",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                labelInput(
-                  context,
-                  'Email',
-                  TextField(
+                LabelInput(
+                  label: 'Email',
+                  child: TextField(
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email_outlined),
                       hintText: 'Email',
                     ),
                   ),
                 ),
-                labelInput(
-                  context,
-                  'Password',
-                  TextField(
+                LabelInput(
+                  label: 'Password',
+                  child: TextField(
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock_open_sharp),
                       hintText: 'Password',
