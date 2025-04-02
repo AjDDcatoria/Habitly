@@ -34,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                     "Let's dive in into your account",
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  socialAccountButtons(),
+                  SocialAccountButtons(),
                   _controlButtons(context, buttonTheme),
                 ],
               ),

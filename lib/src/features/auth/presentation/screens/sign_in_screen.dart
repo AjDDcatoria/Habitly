@@ -116,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ],
                 ),
-                socialAccountButtons(),
+                SocialAccountButtons(),
               ],
             ),
           ),
