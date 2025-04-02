@@ -37,6 +37,8 @@ dependencies:
   go_router: ^14.8.1
   flutter_svg: ^2.0.7
   smooth_page_indicator: ^1.2.1
+  percent_indicator: ^4.0.1
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:

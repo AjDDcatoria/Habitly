@@ -1,8 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:habitly/src/common_widgets/social_account_buttons.dart';
+import 'package:go_router/go_router.dart';
+import 'package:habitly/src/components/wide_container.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/social_account_buttons.dart';
 import 'package:habitly/src/components/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -96,6 +101,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       style: Theme.of(context).textTheme.titleSmall,
                       children: [
                         TextSpan(
+                          recognizer:
+                              TapGestureRecognizer()
+                                ..onTap = () => context.push(RouteNames.signin),
                           text: 'Sign in',
                           style: TextStyle(
                             color: AppColors.primary,
@@ -130,28 +138,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.light,
-        height: 100.0,
-        padding: EdgeInsets.all(0),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: Colors.grey[300]!, // Border color
-                width: 1.0, // Border thickness
-              ),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSizes.defaultBtwItems,
-            children: [
-              Expanded(
-                child: ElevatedButton(onPressed: () {}, child: Text("Sign up")),
-              ),
-            ],
+      bottomNavigationBar: FooterAppBar(
+        child: WideContainer(
+          child: ElevatedButton(
+            onPressed: () => context.push(RouteNames.signupStep),
+            child: Text('Sign up'),
           ),
         ),
       ),

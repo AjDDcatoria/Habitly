@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:habitly/src/features/auth/presentation/screens/sign_up_steps_screen.dart';
 import 'package:habitly/src/features/home/presentation/screens/home_screen.dart';
 import 'package:habitly/src/features/started/screens/walk_through.dart';
 import 'package:habitly/src/features/started/screens/welcome_screen.dart';
@@ -25,5 +26,9 @@ class AppRouteBuilder {
 
   static Widget signUpScreen(BuildContext context, GoRouterState state) {
     return const SignUpScreen();
+  }
+
+  static Widget signUpStepsScreen(BuildContext context, GoRouterState state) {
+    return const SignUpStepScreens();
   }
 }

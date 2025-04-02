@@ -13,6 +13,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: RouteNames.home, builder: AppRouteBuilder.homeScreen),
     GoRoute(path: RouteNames.signin, builder: AppRouteBuilder.signInScreen),
     GoRoute(path: RouteNames.signup, builder: AppRouteBuilder.signUpScreen),
+    GoRoute(
+      path: RouteNames.signupStep,
+      builder: AppRouteBuilder.signUpStepsScreen,
+    ),
   ],
   redirect: (context, state) => null,
   errorBuilder:
