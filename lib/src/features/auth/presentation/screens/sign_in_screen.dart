@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habitly/src/components/wide_container.dart';
 import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
 import 'package:habitly/src/features/auth/presentation/widgets/social_account_buttons.dart';
 import 'package:habitly/src/components/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -87,7 +89,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () => context.push(RouteNames.forgotPassword),
                       child: Text(
                         'Forgot Password?',
                         style: TextStyle(
