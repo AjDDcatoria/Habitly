@@ -17,6 +17,15 @@ final GoRouter appRouter = GoRouter(
       path: RouteNames.signupStep,
       builder: AppRouteBuilder.signUpStepsScreen,
     ),
+    GoRoute(
+      path: RouteNames.forgotPassword,
+      builder: AppRouteBuilder.forgotPasswordScreeen,
+    ),
+    GoRoute(path: RouteNames.otpCode, builder: AppRouteBuilder.otpCodeScreen),
+    GoRoute(
+      path: RouteNames.newPassword,
+      builder: AppRouteBuilder.newPasswordScreen,
+    ),
   ],
   redirect: (context, state) => null,
   errorBuilder:
