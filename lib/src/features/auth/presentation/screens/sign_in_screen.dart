@@ -126,7 +126,10 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       bottomNavigationBar: FooterAppBar(
         child: WideContainer(
-          child: ElevatedButton(onPressed: () {}, child: Text('Sign in')),
+          child: ElevatedButton(
+            onPressed: () => context.go(RouteNames.mainScreen),
+            child: Text('Sign in'),
+          ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ final GoRouter appRouter = GoRouter(
       builder: AppRouteBuilder.walkThrought,
     ),
     GoRoute(path: RouteNames.welcome, builder: AppRouteBuilder.welcomeScreen),
-    GoRoute(path: RouteNames.home, builder: AppRouteBuilder.homeScreen),
+    GoRoute(path: RouteNames.mainScreen, builder: AppRouteBuilder.mainScreen),
     GoRoute(path: RouteNames.signin, builder: AppRouteBuilder.signInScreen),
     GoRoute(path: RouteNames.signup, builder: AppRouteBuilder.signUpScreen),
     GoRoute(

@@ -6,7 +6,7 @@ import 'package:habitly/src/features/auth/presentation/screens/otp_code.screen.d
 import 'package:habitly/src/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_up_steps_screen.dart';
-import 'package:habitly/src/features/home/presentation/screens/home_screen.dart';
+import 'package:habitly/src/features/main_screens/presentation/screens/main_screen.dart';
 import 'package:habitly/src/features/started/screens/walk_through.dart';
 import 'package:habitly/src/features/started/screens/welcome_screen.dart';
 
@@ -19,8 +19,8 @@ class AppRouteBuilder {
     return const WelcomeScreen();
   }
 
-  static Widget homeScreen(BuildContext context, GoRouterState state) {
-    return const HomeScreen();
+  static Widget mainScreen(BuildContext context, GoRouterState state) {
+    return const MainScreen();
   }
 
   static Widget signInScreen(BuildContext context, GoRouterState state) {

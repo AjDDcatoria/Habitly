@@ -30,6 +30,7 @@ class AppColors {
   static Color lightGrey = Color.fromARGB(255, 244, 243, 243);
   static Color darkGrey = Color(0xFF35383F);
   static Color lightCream = Color(0xFFFFFFCC);
+  static Color creamOrange = Color(0xFFFF9899);
   static Color peach = Color(0xFFFFCC99);
   static Color taupe = Color(0xFFAA9499);
   static Color beige = Color(0xFFC6A4A4);
