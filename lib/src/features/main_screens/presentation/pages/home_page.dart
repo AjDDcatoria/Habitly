@@ -4,6 +4,7 @@ import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/current_habit_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_schedule_toggle_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/main_screen_appbar_widget.dart';
 import 'package:habitly/src/model/habit_model.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -69,14 +70,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        leadingWidth: 50.0,
-        leading: Container(
-          margin: EdgeInsets.only(left: AppSizes.paddingLg),
-          child: Image.asset('assets/images/logo.png'),
-        ),
-        centerTitle: true,
-        title: Text('Home', style: Theme.of(context).textTheme.headlineSmall),
+      appBar: MainScreenAppBarWidget(
+        title: 'Home',
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
       body: SingleChildScrollView(
