@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/sizes.dart';
 
-class HomePageFilterWidget extends StatelessWidget {
+class HomePageFilterToggleWidget extends StatelessWidget {
   final List<String> labels;
   final int currentIndex;
   final Function onPressed;
 
-  const HomePageFilterWidget({
+  const HomePageFilterToggleWidget({
     super.key,
     required this.labels,
     required this.currentIndex,

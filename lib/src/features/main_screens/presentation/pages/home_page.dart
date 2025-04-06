@@ -3,7 +3,7 @@ import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/current_habit_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
-import 'package:habitly/src/features/main_screens/presentation/widgets/home_pages_toggle_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_schedule_toggle_widget.dart';
 import 'package:habitly/src/model/habit_model.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -85,11 +85,16 @@ class _HomePageState extends State<HomePage> {
           spacing: AppSizes.defaultBtwItems,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HomePageToggleWidget(
+            HomePageScheduleToggleWidget(
               currentIndex: currentHomePage,
               labels: homePageToggle,
+              onToggle: (index) {
+                setState(() {
+                  currentHomePage = index;
+                });
+              },
             ),
-            HomePageFilterWidget(
+            HomePageFilterToggleWidget(
               currentIndex: currentHomePageFilter,
               labels: homePageFilter,
               onPressed: (index) {
