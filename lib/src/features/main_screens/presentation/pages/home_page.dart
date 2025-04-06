@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
-import 'package:habitly/src/features/main_screens/presentation/widgets/habit_button.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/current_habit_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/home_pages_toggle_widget.dart';
 import 'package:habitly/src/model/habit_model.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,6 +32,39 @@ class _HomePageState extends State<HomePage> {
   IconData? iconHabitContainer;
   String? habitTitleContainer;
 
+  // Home page toggle list
+  final List<String> homePageToggle = ['Today', 'Weekly', 'Overall'];
+  int currentHomePage = 0;
+  final List<String> homePageFilter = [
+    'All',
+    'Morning',
+    'Afternoon',
+    'Evening',
+  ];
+  int currentHomePageFilter = 0;
+
+  void onDrag(dragDetails) {
+    setState(() {
+      if (dragDetails.direction == DismissDirection.startToEnd) {
+        alignmentHabitContainer = Alignment.centerLeft;
+        bgHabitContainer = AppColors.success;
+        iconHabitContainer = Icons.check;
+        habitTitleContainer = '';
+      } else if (dragDetails.direction == DismissDirection.endToStart) {
+        bgHabitContainer = AppColors.error;
+        alignmentHabitContainer = Alignment.centerRight;
+        iconHabitContainer = Iconsax.arrow_right_1_copy;
+        habitTitleContainer = 'Skip';
+      }
+    });
+  }
+
+  void onDismissed(direction, index) {
+    setState(() {
+      habitList.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,103 +85,27 @@ class _HomePageState extends State<HomePage> {
           spacing: AppSizes.defaultBtwItems,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-              child: ToggleSwitch(
-                initialLabelIndex: 0,
-                minHeight: 55.0,
-                fontSize: 15,
-                minWidth: double.infinity,
-                inactiveBgColor: AppColors.lightGrey,
-                activeFgColor: Colors.white,
-                totalSwitches: 3,
-                customTextStyles: [TextStyle(fontWeight: FontWeight.w600)],
-                labels: ['Today', 'Weekly', 'Overall'],
-                onToggle: (index) {},
-              ),
+            HomePageToggleWidget(
+              currentIndex: currentHomePage,
+              labels: homePageToggle,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-              child: Row(
-                spacing: AppSizes.defaultBtwItems,
-                children: <Widget>[
-                  ElevatedButton(onPressed: () {}, child: Text('All')),
-                  OutlinedButton(onPressed: () {}, child: Text('Morning')),
-                  OutlinedButton(onPressed: () {}, child: Text('Afternoon')),
-                  OutlinedButton(onPressed: () {}, child: Text('Evening')),
-                ],
-              ),
-            ),
-            ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-              itemCount: habitList.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              separatorBuilder:
-                  (context, index) =>
-                      SizedBox(height: AppSizes.defaultBtwItems),
-              itemBuilder: (context, index) {
-                final habit = habitList[index];
-                return Dismissible(
-                  key: Key(habit.id),
-                  onUpdate: (dragDetails) {
-                    setState(() {
-                      if (dragDetails.direction ==
-                          DismissDirection.startToEnd) {
-                        alignmentHabitContainer = Alignment.centerLeft;
-                        bgHabitContainer = AppColors.success;
-                        iconHabitContainer = Icons.check;
-                        habitTitleContainer = '';
-                      } else if (dragDetails.direction ==
-                          DismissDirection.endToStart) {
-                        bgHabitContainer = AppColors.error;
-                        alignmentHabitContainer = Alignment.centerRight;
-                        iconHabitContainer = Iconsax.arrow_right_1_copy;
-                        habitTitleContainer = 'Skip';
-                      }
-                    });
-                  },
-                  onDismissed: (direction) {
-                    setState(() {
-                      habitList.removeAt(index);
-                    });
-                  },
-                  background: Container(
-                    alignment: alignmentHabitContainer,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSizes.paddingLg,
-                    ),
-                    decoration: BoxDecoration(
-                      color: bgHabitContainer,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextButton.icon(
-                      onPressed: () {},
-                      iconAlignment: IconAlignment.end,
-                      label: Text(
-                        habitTitleContainer ?? '',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      icon: Icon(
-                        iconHabitContainer,
-                        color: Colors.white,
-                        size: 30.0,
-                      ),
-                    ),
-                  ),
-                  child: HabitButton(
-                    icon: habit.icon,
-                    title: habit.title,
-                    color: habit.bgColor,
-                  ),
-                );
+            HomePageFilterWidget(
+              currentIndex: currentHomePageFilter,
+              labels: homePageFilter,
+              onPressed: (index) {
+                setState(() {
+                  currentHomePageFilter = index;
+                });
               },
+            ),
+            CurrentHabitWidget(
+              habitList: habitList,
+              onDrag: onDrag,
+              onDismissed: onDismissed,
+              bgHabitContainer: bgHabitContainer,
+              alignmentHabitContainer: alignmentHabitContainer,
+              iconHabitContainer: iconHabitContainer,
+              habitTitleContainer: habitTitleContainer,
             ),
             Padding(
               padding: const EdgeInsets.all(AppSizes.paddingLg),
