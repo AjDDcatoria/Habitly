@@ -5,10 +5,13 @@ import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/constants/strings/icon_constants.dart';
 import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/color_picker_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/daily_picker_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/habit_monthly_picker_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/habit_weekly_picker_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
 class DayTitles {
   String title;
@@ -36,9 +39,19 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
     DayTitles(title: 'S', label: 'saturday'),
   ];
   final Set _selectedDaysOfTheWeek = <String>{};
+  Set dayList = {
+    'sunday',
+    'monday',
+    'tuesday',
+    'wedsday',
+    'thursday',
+    'friday',
+    'saturday',
+  };
 
   final List<String> _numberOfDays = ['1', '2', '3', '4', '5', '6', '7'];
   int _selectedNumberOfDays = 0;
+
   List<DateTime> _selectedDates = [];
 
   bool isCheckAllDay = false;
@@ -76,228 +89,120 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                 labels: ['Regular Habit', 'One-Time Task'],
                 onToggle: (index) {},
               ),
+
               LabelInput(
                 label: 'Habit Name',
                 child: TextField(
                   decoration: InputDecoration(hintText: 'Habit Name'),
                 ),
               ),
-              _iconList(context),
-              _colorsGrid(),
+
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Icon', style: TextStyle(fontSize: 16.0)),
+                        TextButton.icon(
+                          onPressed: () {},
+                          iconAlignment: IconAlignment.end,
+                          icon: Icon(Iconsax.arrow_right_1_copy, size: 22.0),
+                          label: Text(
+                            'View all',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: 12.0,
+                        children:
+                            allIcons
+                                .map(
+                                  (buttonIcon) =>
+                                      _iconButton(buttonIcon, context),
+                                )
+                                .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              ColorPicker(),
+
               Column(
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: Column(
-                      spacing: AppSizes.defaultBtwItems,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Repeat'),
-                        HomePageFilterToggleWidget(
-                          currentIndex: _selectedRepeatIndex,
-                          horizontalPadding: 30.0,
-                          verticalPadding: 10.0,
-                          labels: _repeatList,
-                          onPressed: (index) {
-                            setState(() {
-                              _selectedRepeatIndex = index;
-                            });
-                          },
-                        ),
-                      ],
+                    child: LabelInput(
+                      label: "Repeate",
+                      child: HomePageFilterToggleWidget(
+                        currentIndex: _selectedRepeatIndex,
+                        horizontalPadding: 30.0,
+                        verticalPadding: 10.0,
+                        labels: _repeatList,
+                        onPressed: (index) {
+                          setState(() {
+                            _selectedRepeatIndex = index;
+                          });
+                        },
+                      ),
                     ),
                   ),
                   if (_selectedRepeatIndex == 0) ...[
-                    SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('On These Day'),
-                              Row(
-                                children: [
-                                  Text('All Day'),
-                                  Checkbox(
-                                    value: isCheckAllDay,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        // temporary
-                                        Set dayList = {
-                                          'sunday',
-                                          'monday',
-                                          'tuesday',
-                                          'wedsday',
-                                          'thursday',
-                                          'friday',
-                                          'saturday',
-                                        };
-                                        for (String day in dayList) {
-                                          _selectedDaysOfTheWeek.add(day);
-                                        }
-                                        isCheckAllDay = value!;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 35.0,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (
-                                BuildContext context,
-                                int index,
-                              ) {
-                                return SizedBox(width: 10.0);
-                              },
-                              itemCount: _daysOfTheWeek.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                bool isSelected = _selectedDaysOfTheWeek
-                                    .contains(_daysOfTheWeek[index].label);
-                                String label = _daysOfTheWeek[index].label;
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        _selectedDaysOfTheWeek.remove(label);
-                                      } else {
-                                        _selectedDaysOfTheWeek.add(label);
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 48.0,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          isSelected
-                                              ? AppColors.primary
-                                              : Colors.transparent,
-                                      border: Border.all(
-                                        color: AppColors.lightBorder,
-                                      ),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        _daysOfTheWeek[index].title,
-                                        style: TextStyle(
-                                          color:
-                                              isSelected
-                                                  ? AppColors.light
-                                                  : AppColors.darkGrey,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    DailyPickerWidget(
+                      isCheckAllDay: isCheckAllDay,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          for (String day in dayList) {
+                            _selectedDaysOfTheWeek.add(day);
+                          }
+                          isCheckAllDay = value!;
+                        });
+                      },
+                      selectedLabels: _selectedDaysOfTheWeek,
+                      labels: _daysOfTheWeek,
+                      onTap: (int index) {
+                        setState(() {
+                          if (!_selectedDaysOfTheWeek.contains(
+                            _daysOfTheWeek[index].label,
+                          )) {
+                            _selectedDaysOfTheWeek.add(
+                              _daysOfTheWeek[index].label,
+                            );
+                          } else {
+                            _selectedDaysOfTheWeek.remove(
+                              _daysOfTheWeek[index].label,
+                            );
+                          }
+                        });
+                      },
                     ),
                   ] else if (_selectedRepeatIndex == 1) ...[
-                    Container(
-                      padding: EdgeInsets.only(top: 15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '${_numberOfDays[_selectedNumberOfDays]} days for week',
-                          ),
-                          SizedBox(
-                            height: 60.0,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (
-                                BuildContext context,
-                                int index,
-                              ) {
-                                return SizedBox(width: 10.0);
-                              },
-                              itemCount: _numberOfDays.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                String daynumber = _numberOfDays[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedNumberOfDays = index;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(17),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.lightBorder,
-                                      ),
-                                      shape: BoxShape.circle,
-                                      color:
-                                          _selectedNumberOfDays == index
-                                              ? AppColors.primary
-                                              : Colors.transparent,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        daynumber,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.0,
-                                          color:
-                                              _selectedNumberOfDays == index
-                                                  ? AppColors.light
-                                                  : AppColors.darkGrey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    HabitWeeklyPickerWidget(
+                      labels: _numberOfDays,
+                      onTap: (int index) {
+                        setState(() {
+                          _selectedNumberOfDays = index;
+                        });
+                      },
+                      selectedLabel: _selectedNumberOfDays,
                     ),
                   ] else ...[
                     SizedBox(height: 15.0),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.lightBorder),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: EdgeInsets.all(15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Every mont on'),
-                          Divider(),
-                          CalendarDatePicker2(
-                            config: CalendarDatePicker2Config(
-                              calendarType: CalendarDatePicker2Type.multi,
-                              disableMonthPicker: true,
-                              disableModePicker: true,
-                              hideScrollViewMonthWeekHeader: true,
-                              hideNextMonthIcon: true,
-                              hideLastMonthIcon: true,
-                              hideScrollViewTopHeader: true,
-                              hideMonthPickerDividers: true,
-                              hideScrollViewTopHeaderDivider: true,
-                              hideYearPickerDividers: true,
-                            ),
-                            value: _selectedDates,
-                            onValueChanged: (List<DateTime> dates) {
-                              setState(() {
-                                _selectedDates = dates;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                    HabitMonthlyPickerWidget(
+                      selectedDates: _selectedDates,
+                      onValueChange: (List<DateTime> dates) {
+                        setState(() {
+                          _selectedDates = [...dates];
+                        });
+                      },
                     ),
                   ],
                 ],
@@ -320,6 +225,7 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                   ],
                 ),
               ),
+
               Column(
                 spacing: AppSizes.defaultBtwItems,
                 children: [
@@ -380,68 +286,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
         return Colors.transparent;
       }),
       onChanged: onChange,
-    );
-  }
-
-  Column _colorsGrid() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSizes.defaultBtwItems,
-      children: [
-        Text('Color'),
-        SizedBox(
-          height: 240,
-          child: GridView.count(
-            crossAxisCount: 5,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            physics: NeverScrollableScrollPhysics(),
-            children:
-                colorList.map((color) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
-                    margin: EdgeInsets.all(4),
-                  );
-                }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  SizedBox _iconList(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Icon', style: TextStyle(fontSize: 16.0)),
-              TextButton.icon(
-                onPressed: () {},
-                iconAlignment: IconAlignment.end,
-                icon: Icon(Iconsax.arrow_right_1_copy, size: 22.0),
-                label: Text('View all', style: TextStyle(fontSize: 16.0)),
-              ),
-            ],
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              spacing: 12.0,
-              children:
-                  allIcons
-                      .map((buttonIcon) => _iconButton(buttonIcon, context))
-                      .toList(),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
