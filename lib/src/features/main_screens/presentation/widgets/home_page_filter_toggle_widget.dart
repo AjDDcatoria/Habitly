@@ -5,12 +5,16 @@ class HomePageFilterToggleWidget extends StatelessWidget {
   final List<String> labels;
   final int currentIndex;
   final Function onPressed;
+  final double? horizontalPadding;
+  final double? verticalPadding;
 
   const HomePageFilterToggleWidget({
     super.key,
     required this.labels,
     required this.currentIndex,
     required this.onPressed,
+    this.horizontalPadding,
+    this.verticalPadding,
   });
 
   @override
@@ -24,10 +28,22 @@ class HomePageFilterToggleWidget extends StatelessWidget {
           return index == currentIndex
               ? ElevatedButton(
                 onPressed: () => onPressed(index),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding ?? AppSizes.paddingLg,
+                    vertical: verticalPadding ?? AppSizes.paddingLg,
+                  ),
+                ),
                 child: Text(labels[index].toString()),
               )
               : OutlinedButton(
                 onPressed: () => onPressed(index),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding ?? AppSizes.paddingLg,
+                    vertical: verticalPadding ?? AppSizes.paddingLg,
+                  ),
+                ),
                 child: Text(labels[index].toString()),
               );
         }),

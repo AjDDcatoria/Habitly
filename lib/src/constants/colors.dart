@@ -45,3 +45,20 @@ class AppColors {
   static Color skyBlue = Color(0xFFCCFFFF);
   static Color mintGreen = Color(0xFFCCFFCC);
 }
+
+final List<Color> colorList = [
+  AppColors.lightCream,
+  AppColors.peach,
+  AppColors.taupe,
+  AppColors.beige,
+  AppColors.creamOrange,
+  AppColors.coral,
+  AppColors.softPink,
+  AppColors.candyPink,
+  AppColors.lavenderPink,
+  AppColors.periwinkle,
+  AppColors.babyBlue,
+  AppColors.mutedTeal,
+  AppColors.skyBlue,
+  AppColors.mintGreen,
+];
