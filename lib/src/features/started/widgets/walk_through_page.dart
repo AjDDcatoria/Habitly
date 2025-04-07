@@ -30,8 +30,7 @@ class WalkThroughPageWidget extends StatelessWidget {
           ),
         ),
         Container(
-          height: 250,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.only(right: 16.0, left: 16.0, bottom: 65.0),
           child: Column(
             spacing: AppSizes.defaultBtwItems,
             children: [

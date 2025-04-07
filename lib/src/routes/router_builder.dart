@@ -6,6 +6,7 @@ import 'package:habitly/src/features/auth/presentation/screens/otp_code.screen.d
 import 'package:habitly/src/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:habitly/src/features/auth/presentation/screens/sign_up_steps_screen.dart';
+import 'package:habitly/src/features/main_screens/presentation/pages/create_new_habit_page.dart';
 import 'package:habitly/src/features/main_screens/presentation/screens/main_screen.dart';
 import 'package:habitly/src/features/started/screens/walk_through.dart';
 import 'package:habitly/src/features/started/screens/welcome_screen.dart';
@@ -48,5 +49,9 @@ class AppRouteBuilder {
 
   static Widget newPasswordScreen(BuildContext context, GoRouterState state) {
     return const NewPasswordScreen();
+  }
+
+  static Widget createNewHabit(BuildContext context, GoRouterState state) {
+    return const CreateNewHabitPage();
   }
 }

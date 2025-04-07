@@ -26,6 +26,10 @@ final GoRouter appRouter = GoRouter(
       path: RouteNames.newPassword,
       builder: AppRouteBuilder.newPasswordScreen,
     ),
+    GoRoute(
+      path: RouteNames.createNewHabit,
+      builder: AppRouteBuilder.createNewHabit,
+    ),
   ],
   redirect: (context, state) => null,
   errorBuilder:

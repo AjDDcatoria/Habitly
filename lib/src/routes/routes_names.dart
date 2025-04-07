@@ -8,4 +8,5 @@ abstract class RouteNames {
   static const String forgotPassword = '/forgot-password';
   static const String otpCode = '/otp-code';
   static const String newPassword = '/new-password';
+  static const String createNewHabit = '/create-new-habit';
 }
