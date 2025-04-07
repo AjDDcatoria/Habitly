@@ -3,7 +3,7 @@ import 'package:habitly/src/components/habit_button.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/model/habit_model.dart';
 
-class CurrentHabitWidget extends StatefulWidget {
+class CurrentHabitListWidget extends StatefulWidget {
   final List<Habit> habitList;
   final Function onDrag;
   final Function onDismissed;
@@ -12,7 +12,7 @@ class CurrentHabitWidget extends StatefulWidget {
   final IconData? iconHabitContainer;
   final String? habitTitleContainer;
 
-  const CurrentHabitWidget({
+  const CurrentHabitListWidget({
     super.key,
     required this.habitList,
     required this.onDrag,
@@ -24,10 +24,10 @@ class CurrentHabitWidget extends StatefulWidget {
   });
 
   @override
-  State<CurrentHabitWidget> createState() => CurrentHabitWidgetState();
+  State<CurrentHabitListWidget> createState() => CurrentHabitListWidgetState();
 }
 
-class CurrentHabitWidgetState extends State<CurrentHabitWidget> {
+class CurrentHabitListWidgetState extends State<CurrentHabitListWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -41,7 +41,7 @@ class CurrentHabitWidgetState extends State<CurrentHabitWidget> {
         final habit = widget.habitList[index];
         return Dismissible(
           key: Key(habit.id),
-          onUpdate: (dragDetails) => widget.onDrag(dragDetails),
+          onUpdate: (dragDetails) => widget.onDrag(dragDetails, index),
           onDismissed: (direction) => widget.onDismissed(direction, index),
           background: Container(
             alignment: widget.alignmentHabitContainer,

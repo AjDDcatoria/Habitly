@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
-import 'package:habitly/src/features/main_screens/presentation/widgets/current_habit_widget.dart';
+import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/current_habitlist_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_schedule_toggle_widget.dart';
+import 'package:habitly/src/features/main_screens/presentation/widgets/labeled_habitslist_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/main_screen_appbar_widget.dart';
 import 'package:habitly/src/model/habit_model.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,7 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Habit> habitList = [
+  // Current habit list
+  final List<Habit> currentHabitList = [
     Habit(
       id: '1',
       title: 'Set Small Goals',
@@ -27,6 +32,11 @@ class _HomePageState extends State<HomePage> {
     Habit(id: '3', title: 'Meditation', icon: '😇', bgColor: 'mintGreen'),
     Habit(id: '4', title: 'Basketball', icon: '🏀', bgColor: 'peach'),
   ];
+
+  // Completed habit list
+  final List<Habit> completedHabitList = [];
+  // Skip habit list
+  final List<Habit> skipedHabitList = [];
 
   Color? bgHabitContainer;
   Alignment? alignmentHabitContainer;
@@ -44,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   ];
   int currentHomePageFilter = 0;
 
-  void onDrag(dragDetails) {
+  void onDrag(dragDetails, index) {
     setState(() {
       if (dragDetails.direction == DismissDirection.startToEnd) {
         alignmentHabitContainer = Alignment.centerLeft;
@@ -62,7 +72,12 @@ class _HomePageState extends State<HomePage> {
 
   void onDismissed(direction, index) {
     setState(() {
-      habitList.removeAt(index);
+      Habit habit = currentHabitList.removeAt(index);
+      if (direction == DismissDirection.startToEnd) {
+        completedHabitList.insert(0, habit);
+      } else if (direction == DismissDirection.endToStart) {
+        skipedHabitList.insert(0, habit);
+      }
     });
   }
 
@@ -98,8 +113,8 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
-            CurrentHabitWidget(
-              habitList: habitList,
+            CurrentHabitListWidget(
+              habitList: currentHabitList,
               onDrag: onDrag,
               onDismissed: onDismissed,
               bgHabitContainer: bgHabitContainer,
@@ -107,15 +122,24 @@ class _HomePageState extends State<HomePage> {
               iconHabitContainer: iconHabitContainer,
               habitTitleContainer: habitTitleContainer,
             ),
-            Padding(
-              padding: const EdgeInsets.all(AppSizes.paddingLg),
-              child: Text('Completed'),
-            ),
+            if (skipedHabitList.isNotEmpty) ...[
+              LabeledHabitListWidget(
+                habitList: skipedHabitList,
+                label: 'Skipped',
+              ),
+            ],
+
+            if (completedHabitList.isNotEmpty) ...[
+              LabeledHabitListWidget(
+                habitList: completedHabitList,
+                label: 'Completed',
+              ),
+            ],
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => context.push(RouteNames.createNewHabit),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
