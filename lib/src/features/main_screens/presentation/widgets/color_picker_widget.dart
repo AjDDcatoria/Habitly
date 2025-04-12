@@ -3,7 +3,10 @@ import 'package:habitly/src/components/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 
 class ColorPicker extends StatelessWidget {
-  const ColorPicker({super.key});
+  final int? selected;
+  final Function onTap;
+
+  const ColorPicker({super.key, this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +19,22 @@ class ColorPicker extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           physics: NeverScrollableScrollPhysics(),
-          children:
-              colorList.map((color) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                  ),
-                  margin: EdgeInsets.all(4),
-                );
-              }).toList(),
+          children: List.generate(colorList.length, (int index) {
+            return GestureDetector(
+              onTap: () => onTap(index),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colorList[index],
+                  shape: BoxShape.circle,
+                ),
+                margin: EdgeInsets.all(4),
+                child: Center(
+                  child:
+                      selected == index ? Icon(Icons.check, size: 30.0) : null,
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );

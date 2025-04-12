@@ -10,8 +10,8 @@ import 'package:habitly/src/features/main_screens/presentation/widgets/daily_pic
 import 'package:habitly/src/features/main_screens/presentation/widgets/habit_monthly_picker_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/habit_weekly_picker_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
+import 'package:habitly/src/themes/theme.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class DayTitles {
   String title;
@@ -51,24 +51,33 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
 
   final List<String> _numberOfDays = ['1', '2', '3', '4', '5', '6', '7'];
   int _selectedNumberOfDays = 0;
+  int? _selectedIcon;
 
   List<DateTime> _selectedDates = [];
 
-  bool isCheckAllDay = false;
+  final List<String> _doItAtList = ['Morning', 'Afternoon', 'Evening'];
+  int _selectedDoItAt = 0;
 
-  bool isHabitEndOn = false;
+  int? _selecteColor;
+
+  bool isCheckAllDay = false;
   bool isSetReminderOn = false;
+
+  void selectIcon(int value) {
+    setState(() {
+      _selectedIcon = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final buttonTheme = Theme.of(context).extension<SecondaryButtonTheme>()!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(Icons.close),
         ),
-        title: Text('Create New Habit'),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -77,17 +86,11 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: AppSizes.defaultBtwSections,
             children: <Widget>[
-              ToggleSwitch(
-                initialLabelIndex: 0,
-                minHeight: 55.0,
-                fontSize: 15,
-                minWidth: double.infinity,
-                inactiveBgColor: AppColors.lightGrey,
-                activeFgColor: Colors.white,
-                totalSwitches: 2,
-                customTextStyles: [TextStyle(fontWeight: FontWeight.w600)],
-                labels: ['Regular Habit', 'One-Time Task'],
-                onToggle: (index) {},
+              Center(
+                child: Text(
+                  'Create new Habit',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
 
               LabelInput(
@@ -107,7 +110,9 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                       children: [
                         Text('Icon', style: TextStyle(fontSize: 16.0)),
                         TextButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showModalBottomSheetIcons(context, buttonTheme);
+                          },
                           iconAlignment: IconAlignment.end,
                           icon: Icon(Iconsax.arrow_right_1_copy, size: 22.0),
                           label: Text(
@@ -121,20 +126,25 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         spacing: 12.0,
-                        children:
-                            allIcons
-                                .map(
-                                  (buttonIcon) =>
-                                      _iconButton(buttonIcon, context),
-                                )
-                                .toList(),
+                        children: List.generate(allIcons.length, (int index) {
+                          return _iconButton(index, (value) {
+                            selectIcon(value);
+                          }, context);
+                        }),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              ColorPicker(),
+              ColorPicker(
+                selected: _selecteColor,
+                onTap: (value) {
+                  setState(() {
+                    _selecteColor = value;
+                  });
+                },
+              ),
 
               Column(
                 children: [
@@ -216,46 +226,30 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                   children: [
                     Text('Dot it at:'),
                     HomePageFilterToggleWidget(
-                      currentIndex: 0,
+                      currentIndex: _selectedDoItAt,
                       horizontalPadding: 30.0,
                       verticalPadding: 10.0,
-                      labels: ['Morning', 'Afternoon', 'Evening'],
-                      onPressed: (index) {},
+                      labels: _doItAtList,
+                      onPressed: (index) {
+                        setState(() {
+                          _selectedDoItAt = index;
+                        });
+                      },
                     ),
                   ],
                 ),
               ),
-
-              Column(
-                spacing: AppSizes.defaultBtwItems,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('End Habit on'),
-                      Transform.scale(
-                        scale: 0.7,
-                        child: _switch(isHabitEndOn, (value) {
-                          setState(() {
-                            isHabitEndOn = value;
-                          });
-                        }),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Set Reminder'),
-                      Transform.scale(
-                        scale: 0.7,
-                        child: _switch(isSetReminderOn, (value) {
-                          setState(() {
-                            isSetReminderOn = value;
-                          });
-                        }),
-                      ),
-                    ],
+                  Text('Set Reminder'),
+                  Transform.scale(
+                    scale: 0.7,
+                    child: _switch(isSetReminderOn, (value) {
+                      setState(() {
+                        isSetReminderOn = value;
+                      });
+                    }),
                   ),
                 ],
               ),
@@ -266,6 +260,87 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
       bottomNavigationBar: FooterAppBar(
         child: ElevatedButton(onPressed: () {}, child: Text('Save')),
       ),
+    );
+  }
+
+  Future<dynamic> _showModalBottomSheetIcons(
+    BuildContext context,
+    SecondaryButtonTheme buttonTheme,
+  ) {
+    return showModalBottomSheet(
+      backgroundColor: Colors.white,
+      showDragHandle: true,
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              height: 700.0,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    children: [
+                      Text(
+                        'Choose Icon',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 560.0,
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                            spacing: 16.0,
+                            runSpacing: 16.0,
+                            children: List.generate(allIcons.length, (
+                              int index,
+                            ) {
+                              return _iconButton(index, (value) {
+                                selectIcon(value);
+                                setState(() {
+                                  _selectedIcon = value;
+                                });
+                              }, context);
+                            }),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+
+                    child: Row(
+                      spacing: 16.0,
+                      children: <Widget>[
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: buttonTheme.secondary.style,
+                            child: Text('Cancel'),
+                          ),
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -289,14 +364,25 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
     );
   }
 
-  OutlinedButton _iconButton(String buttonIcon, BuildContext context) {
+  OutlinedButton _iconButton(
+    int index,
+    Function onChange,
+    BuildContext context,
+  ) {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: () {
+        onChange(index);
+      },
       style: OutlinedButton.styleFrom(
+        backgroundColor:
+            _selectedIcon == index ? AppColors.primary : Colors.transparent,
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
-      child: Text(buttonIcon, style: Theme.of(context).textTheme.headlineLarge),
+      child: Text(
+        allIcons[index],
+        style: Theme.of(context).textTheme.headlineLarge,
+      ),
     );
   }
 }
