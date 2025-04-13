@@ -1,6 +1,6 @@
 {
-    "dart.previewFlutterUiGuides": true,
-    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.previewFlutterUiGuides": false,
+    "dart.previewFlutterUiGuidesCustomTracking": false,
     "gitlens.views.scm.grouped.views": {
         "repositories": true,
         "searchAndCompare": true,
@@ -9,5 +9,38 @@
     "editor.guides.highlightActiveIndentation": true,
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": false,
-  "editor.guides.bracketPairsHorizontal": true
+  "editor.guides.bracketPairsHorizontal": true,
+  "java.project.sourcePaths": [
+    "lib/src/features/main_screens/bloc"
+  ],
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.unfoldOnClickAfterEndOfLine": true,
+  "search.showLineNumbers": true,
+  "inlineChat.lineEmptyHint": true,
+  "bladeFormatter.format.noMultipleEmptyLines": true,
+  "C_Cpp.vcFormat.newLine.scopeBracesOnSeparateLines": true,
+  "codesnap.realLineNumbers": true,
+  "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyType": true,
+  "C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": true,
+  "C_Cpp.vcFormat.newLine.beforeWhileInDoWhile": true,
+  "eslint.problems.shortenToSingleLine": true,
+  "prettier.bracketSameLine": true,
+  "prettier.singleAttributePerLine": true,
+  "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+  "javascript.format.placeOpenBraceOnNewLineForFunctions": true,
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+  "xml.format.joinCommentLines": true,
+  "xml.format.closingBracketNewLine": true,
+  "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
+  "xml.format.joinContentLines": true,
+  "editor.inlineCompletionsAccessibilityVerbose": true,
+  "diffEditor.experimental.useTrueInlineView": true,
+  "editor.inlineSuggest.edits.showCollapsed": true,
+  "editor.inlineSuggest.suppressSuggestions": true,
+  "files.trimFinalNewlines": true,
+  "accessibility.underlineLinks": true,
+  "files.insertFinalNewline": true,
+  "editor.formatOnPaste": true,
+  "diffEditor.diffAlgorithm": "legacy",
+  "dart.showInspectorNotificationsForWidgetErrors": false
 }
