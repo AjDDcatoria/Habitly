@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
+import 'package:habitly/src/constants/strings/filters_constants.dart';
+import 'package:habitly/src/features/main_screens/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/current_habitlist_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:habitly/src/features/main_screens/presentation/widgets/home_page_schedule_toggle_widget.dart';
@@ -9,7 +12,6 @@ import 'package:habitly/src/features/main_screens/presentation/widgets/labeled_h
 import 'package:habitly/src/features/main_screens/presentation/widgets/main_screen_appbar_widget.dart';
 import 'package:habitly/src/model/habit_model.dart';
 import 'package:habitly/src/routes/routes_names.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,65 +21,49 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Current habit list
-  final List<Habit> currentHabitList = [
-    Habit(
-      id: '1',
-      title: 'Set Small Goals',
-      icon: '🎯',
-      bgColor: 'creamOrange',
-    ),
-    Habit(id: '2', title: 'Work', icon: '🏆', bgColor: 'periwinkle'),
-    Habit(id: '3', title: 'Meditation', icon: '😇', bgColor: 'mintGreen'),
-    Habit(id: '4', title: 'Basketball', icon: '🏀', bgColor: 'peach'),
-  ];
+  late final HabitBloc bloc;
 
-  // Completed habit list
-  final List<Habit> completedHabitList = [];
-  // Skip habit list
-  final List<Habit> skipedHabitList = [];
-
-  Color? bgHabitContainer;
-  Alignment? alignmentHabitContainer;
-  IconData? iconHabitContainer;
-  String? habitTitleContainer;
-
-  // Home page toggle list
-  final List<String> homePageToggle = ['Today', 'Weekly', 'Overall'];
-  int currentHomePage = 0;
-  final List<String> homePageFilter = [
-    'All',
-    'Morning',
-    'Afternoon',
-    'Evening',
-  ];
-  int currentHomePageFilter = 0;
-
-  void onDrag(dragDetails, index) {
-    setState(() {
-      if (dragDetails.direction == DismissDirection.startToEnd) {
-        alignmentHabitContainer = Alignment.centerLeft;
-        bgHabitContainer = AppColors.success;
-        iconHabitContainer = Icons.check;
-        habitTitleContainer = '';
-      } else if (dragDetails.direction == DismissDirection.endToStart) {
-        bgHabitContainer = AppColors.error;
-        alignmentHabitContainer = Alignment.centerRight;
-        iconHabitContainer = Iconsax.arrow_right_1_copy;
-        habitTitleContainer = 'Skip';
+  @override
+  void initState() {
+    super.initState();
+    bloc = context.read<HabitBloc>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!bloc.state.hasMounted) {
+        bloc.add(OnMounted());
       }
     });
   }
 
-  void onDismissed(direction, index) {
-    setState(() {
-      Habit habit = currentHabitList.removeAt(index);
-      if (direction == DismissDirection.startToEnd) {
-        completedHabitList.insert(0, habit);
-      } else if (direction == DismissDirection.endToStart) {
-        skipedHabitList.insert(0, habit);
-      }
-    });
+  void onDrag(DismissUpdateDetails direction) {
+    bloc.add(OnDragHabitContainer(direction.direction));
+  }
+
+  void onDismissed(
+    DismissDirection direction,
+    int index,
+    List<Habit> habitList,
+  ) {
+    final habitID = habitList[index].id;
+
+    bloc.add(
+      UpdateHabitStatus(
+        habitID,
+        direction == DismissDirection.startToEnd
+            ? HabitStatus.completed
+            : HabitStatus.skipped,
+      ),
+    );
+  }
+
+  void onSelectFilters(int index, HabitListFilters filter) {
+    bloc.add(
+      UpdateFilter(
+        index,
+        filter == HabitListFilters.repeate
+            ? HabitListFilters.repeate
+            : HabitListFilters.schedule,
+      ),
+    );
   }
 
   @override
@@ -90,53 +76,58 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(vertical: AppSizes.paddingLg),
-        child: Column(
-          spacing: AppSizes.defaultBtwItems,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomePageScheduleToggleWidget(
-              currentIndex: currentHomePage,
-              labels: homePageToggle,
-              onToggle: (index) {
-                setState(() {
-                  currentHomePage = index;
-                });
-              },
-            ),
-            HomePageFilterToggleWidget(
-              currentIndex: currentHomePageFilter,
-              labels: homePageFilter,
-              onPressed: (index) {
-                setState(() {
-                  currentHomePageFilter = index;
-                });
-              },
-            ),
-            CurrentHabitListWidget(
-              habitList: currentHabitList,
-              onDrag: onDrag,
-              onDismissed: onDismissed,
-              bgHabitContainer: bgHabitContainer,
-              alignmentHabitContainer: alignmentHabitContainer,
-              iconHabitContainer: iconHabitContainer,
-              habitTitleContainer: habitTitleContainer,
-            ),
-            if (skipedHabitList.isNotEmpty) ...[
-              LabeledHabitListWidget(
-                habitList: skipedHabitList,
-                label: 'Skipped',
-              ),
-            ],
+        child: BlocBuilder<HabitBloc, HabitState>(
+          builder: (context, state) {
+            return Column(
+              spacing: AppSizes.defaultBtwItems,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HomePageScheduleToggleWidget(
+                  currentIndex: state.selectedRepeate,
+                  labels: habitRepeateFilters,
+                  onToggle:
+                      (index) =>
+                          onSelectFilters(index, HabitListFilters.repeate),
+                ),
 
-            if (completedHabitList.isNotEmpty) ...[
-              LabeledHabitListWidget(
-                habitList: completedHabitList,
-                label: 'Completed',
-              ),
-            ],
-          ],
+                HomePageFilterToggleWidget(
+                  currentIndex: state.selectedSchedule,
+                  labels: habitScheduleFilters,
+                  onPressed:
+                      (index) =>
+                          onSelectFilters(index, HabitListFilters.schedule),
+                ),
+
+                CurrentHabitListWidget(
+                  habitList: state.todoHabit,
+                  onDrag: (dir, idx) => onDrag(dir),
+                  onDismissed:
+                      (dir, idx) => onDismissed(dir, idx, state.todoHabit),
+                  bgHabitContainer: state.bgColor,
+                  alignmentHabitContainer: state.alignment,
+                  iconHabitContainer: state.icon,
+                  habitTitleContainer: state.title,
+                ),
+
+                if (state.skippedHabits.isNotEmpty) ...[
+                  LabeledHabitListWidget(
+                    habitList: state.skippedHabits,
+                    label: 'Skipped',
+                  ),
+                ],
+
+                if (state.completedHabit.isNotEmpty) ...[
+                  LabeledHabitListWidget(
+                    habitList: state.completedHabit,
+                    label: 'Completed',
+                  ),
+                ],
+              ],
+            );
+          },
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push(RouteNames.createNewHabit),
         backgroundColor: AppColors.primary,

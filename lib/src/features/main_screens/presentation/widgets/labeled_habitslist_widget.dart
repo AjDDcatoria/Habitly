@@ -4,7 +4,7 @@ import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/model/habit_model.dart';
 
-class LabeledHabitListWidget extends StatefulWidget {
+class LabeledHabitListWidget extends StatelessWidget {
   final List<Habit> habitList;
   final String label;
 
@@ -14,11 +14,6 @@ class LabeledHabitListWidget extends StatefulWidget {
     required this.label,
   });
 
-  @override
-  State<LabeledHabitListWidget> createState() => _LabeledHabitListWidgetState();
-}
-
-class _LabeledHabitListWidgetState extends State<LabeledHabitListWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,7 +25,7 @@ class _LabeledHabitListWidgetState extends State<LabeledHabitListWidget> {
             spacing: AppSizes.defaultBtwItems,
             children: [
               Text(
-                widget.label,
+                label,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.grey[500],
@@ -42,18 +37,18 @@ class _LabeledHabitListWidgetState extends State<LabeledHabitListWidget> {
         ),
         ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-          itemCount: widget.habitList.length,
+          itemCount: habitList.length,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           separatorBuilder:
               (context, index) => SizedBox(height: AppSizes.defaultBtwItems),
           itemBuilder: (context, index) {
-            final habit = widget.habitList[index];
+            final habit = habitList[index];
             return HabitButton(
               icon: habit.icon,
               title: habit.title,
               color: habit.bgColor,
-              labeled: widget.label,
+              labeled: label,
             );
           },
         ),
