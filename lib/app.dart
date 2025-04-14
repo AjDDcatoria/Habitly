@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:habitly/src/features/main_screens/bloc/habit/habit_bloc.dart';
+import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/routes/app_router.dart';
 import 'package:habitly/src/themes/theme.dart';
 

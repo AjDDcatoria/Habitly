@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/constants/strings/walkthrough.dart';
-import 'package:habitly/src/features/auth/presentation/widgets/footer_app_bar.dart';
+import 'package:habitly/src/common/footer_app_bar.dart';
 import 'package:habitly/src/features/started/widgets/walk_through_page.dart';
 import 'package:habitly/src/routes/routes_names.dart';
 import 'package:habitly/src/themes/theme.dart';
@@ -94,9 +94,7 @@ class _WalkThroughState extends State<WalkThrough>
             if (_currentPageIndex < 2) ...[
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    context.go(RouteNames.welcome);
-                  },
+                  onPressed: null,
                   style: buttonTheme.secondary.style,
                   child: Text("Skip"),
                 ),
@@ -108,7 +106,7 @@ class _WalkThroughState extends State<WalkThrough>
                   if (_currentPageIndex < 2) {
                     _updateCurrentPageIndex(_currentPageIndex + 1);
                   } else {
-                    context.go(RouteNames.welcome);
+                    context.go(RouteNames.mainScreen);
                   }
                 },
                 child: Text(
