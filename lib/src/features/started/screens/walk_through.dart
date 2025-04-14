@@ -94,7 +94,7 @@ class _WalkThroughState extends State<WalkThrough>
             if (_currentPageIndex < 2) ...[
               Expanded(
                 child: ElevatedButton(
-                  onPressed: null,
+                  onPressed: () => context.go(RouteNames.mainScreen),
                   style: buttonTheme.secondary.style,
                   child: Text("Skip"),
                 ),

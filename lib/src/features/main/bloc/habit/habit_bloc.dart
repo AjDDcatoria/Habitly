@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/colors.dart';
-import 'package:habitly/src/constants/strings/filters_constants.dart';
+import 'package:habitly/src/constants/strings/habit_constants.dart';
 import 'package:habitly/src/data/model/habit_model.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -14,6 +14,22 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<OnDragHabitContainer>(_onDragHabitContainer);
     on<OnMounted>(_onMounted);
     on<UpdateFilter>(_onUpdateFilter);
+    on<OnAddHabit>(_onAddHabit);
+  }
+
+  void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) {
+    event.habit.id = state.habits.length.toString();
+    state.habits.insert(0, event.habit);
+    state.todoHabit.insert(0, event.habit);
+
+    emit(
+      HabitUpdated(
+        habits: state.habits,
+        todoHabit: state.todoHabit,
+        skippedHabits: state.skippedHabits,
+        completedHabit: state.completedHabit,
+      ),
+    );
   }
 
   void _onMounted(OnMounted event, Emitter<HabitState> emit) {

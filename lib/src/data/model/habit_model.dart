@@ -6,11 +6,11 @@ class Habit {
   HabitStatus status;
   HabitSchedule schedule;
   HabitRepeate repeate;
-  List<String> repeateValues;
+  List<dynamic> repeateValues;
   bool reminder;
 
   Habit({
-    required this.id,
+    this.id = '',
     required this.title,
     required this.icon,
     required this.bgColor,

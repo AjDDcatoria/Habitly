@@ -24,3 +24,9 @@ class UpdateFilter extends HabitEvent {
 
   UpdateFilter(this.selectedIndexFilter, this.selectedFilter);
 }
+
+class OnAddHabit extends HabitEvent {
+  final Habit habit;
+
+  OnAddHabit(this.habit);
+}

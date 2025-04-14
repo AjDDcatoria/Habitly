@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
-import 'package:habitly/src/constants/strings/filters_constants.dart';
+import 'package:habitly/src/constants/strings/habit_constants.dart';
 import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main/presentation/widgets/current_habitlist_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/home_page_filter_toggle_widget.dart';

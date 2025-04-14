@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitly/src/common/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
+import 'package:habitly/src/constants/strings/habit_constants.dart';
 import 'package:habitly/src/constants/strings/icon_constants.dart';
 import 'package:habitly/src/common/footer_app_bar.dart';
+import 'package:habitly/src/data/model/habit_model.dart';
+import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main/presentation/widgets/color_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/daily_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/habit_monthly_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/habit_weekly_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:habitly/src/themes/theme.dart';
+import 'package:habitly/src/utils/color_util.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class DayTitles {
@@ -27,46 +32,63 @@ class CreateNewHabitPage extends StatefulWidget {
 }
 
 class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
-  final List<String> _repeatList = ['Daily', 'Weekly', 'Monthly'];
+  late final HabitBloc bloc;
+  final TextEditingController _habitTitle = TextEditingController();
   int _selectedRepeatIndex = 0;
-  final List<DayTitles> _daysOfTheWeek = [
-    DayTitles(title: 'S', label: 'sunday'),
-    DayTitles(title: 'M', label: 'monday'),
-    DayTitles(title: 'T', label: 'tuesday'),
-    DayTitles(title: 'W', label: 'wedsday'),
-    DayTitles(title: 'T', label: 'thursday'),
-    DayTitles(title: 'F', label: 'friday'),
-    DayTitles(title: 'S', label: 'saturday'),
-  ];
   final Set _selectedDaysOfTheWeek = <String>{};
-  Set dayList = {
-    'sunday',
-    'monday',
-    'tuesday',
-    'wedsday',
-    'thursday',
-    'friday',
-    'saturday',
-  };
-
-  final List<String> _numberOfDays = ['1', '2', '3', '4', '5', '6', '7'];
   int _selectedNumberOfDays = 0;
   int? _selectedIcon;
-
   List<DateTime> _selectedDates = [];
-
-  final List<String> _doItAtList = ['Morning', 'Afternoon', 'Evening'];
   int _selectedDoItAt = 0;
-
   int? _selecteColor;
-
   bool isCheckAllDay = false;
   bool isSetReminderOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = context.read<HabitBloc>();
+  }
+
+  @override
+  void dispose() {
+    _habitTitle.dispose();
+    super.dispose();
+  }
 
   void selectIcon(int value) {
     setState(() {
       _selectedIcon = value;
     });
+  }
+
+  void onSave(BuildContext context) {
+    dynamic repeateValues;
+    switch (_selectedRepeatIndex) {
+      case 0:
+        repeateValues = _selectedDaysOfTheWeek.toList();
+        break;
+      case 1:
+        repeateValues = [habitnumberOfDaysList[_selectedNumberOfDays]];
+        break;
+      default:
+        repeateValues = _selectedDates;
+    }
+    bloc.add(
+      OnAddHabit(
+        Habit(
+          title: _habitTitle.text,
+          icon: icons[_selectedIcon!],
+          bgColor: getColorString(_selecteColor!),
+          status: HabitStatus.todo,
+          schedule: HabitSchedule.values[_selectedDoItAt],
+          repeate: HabitRepeate.values[_selectedRepeatIndex],
+          repeateValues: repeateValues,
+          reminder: isSetReminderOn,
+        ),
+      ),
+    );
+    context.pop();
   }
 
   @override
@@ -79,186 +101,202 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
           icon: Icon(Icons.close),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSizes.paddingLg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppSizes.defaultBtwSections,
-            children: <Widget>[
-              Center(
-                child: Text(
-                  'Create new Habit',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
+      body: BlocBuilder<HabitBloc, HabitState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSizes.paddingLg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSizes.defaultBtwSections,
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      'Create new Habit',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
 
-              LabelInput(
-                label: 'Habit Name',
-                child: TextField(
-                  decoration: InputDecoration(hintText: 'Habit Name'),
-                ),
-              ),
+                  LabelInput(
+                    label: 'Habit Name',
+                    child: TextField(
+                      controller: _habitTitle,
+                      decoration: InputDecoration(hintText: 'Habit Name'),
+                    ),
+                  ),
 
-              SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Icon', style: TextStyle(fontSize: 16.0)),
-                        TextButton.icon(
-                          onPressed: () {
-                            _showModalBottomSheetIcons(context, buttonTheme);
-                          },
-                          iconAlignment: IconAlignment.end,
-                          icon: Icon(Iconsax.arrow_right_1_copy, size: 22.0),
-                          label: Text(
-                            'View all',
-                            style: TextStyle(fontSize: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Icon', style: TextStyle(fontSize: 16.0)),
+                            TextButton.icon(
+                              onPressed: () {
+                                _showModalBottomSheetIcons(
+                                  context,
+                                  buttonTheme,
+                                );
+                              },
+                              iconAlignment: IconAlignment.end,
+                              icon: Icon(
+                                Iconsax.arrow_right_1_copy,
+                                size: 22.0,
+                              ),
+                              label: Text(
+                                'View all',
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 12.0,
+                            children: List.generate(allIcons.length, (
+                              int index,
+                            ) {
+                              return _iconButton(index, (value) {
+                                selectIcon(value);
+                              }, context);
+                            }),
                           ),
                         ),
                       ],
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 12.0,
-                        children: List.generate(allIcons.length, (int index) {
-                          return _iconButton(index, (value) {
-                            selectIcon(value);
-                          }, context);
-                        }),
+                  ),
+
+                  ColorPicker(
+                    selected: _selecteColor,
+                    onTap: (value) {
+                      setState(() {
+                        _selecteColor = value;
+                      });
+                    },
+                  ),
+
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: LabelInput(
+                          label: "Repeate",
+                          child: HomePageFilterToggleWidget(
+                            currentIndex: _selectedRepeatIndex,
+                            horizontalPadding: 30.0,
+                            verticalPadding: 10.0,
+                            labels: habitRepeateList,
+                            onPressed: (index) {
+                              setState(() {
+                                _selectedRepeatIndex = index;
+                              });
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      if (_selectedRepeatIndex == 0) ...[
+                        DailyPickerWidget(
+                          isCheckAllDay: isCheckAllDay,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              for (String day in dayList) {
+                                _selectedDaysOfTheWeek.add(day);
+                              }
+                              isCheckAllDay = value!;
+                            });
+                          },
+                          selectedLabels: _selectedDaysOfTheWeek,
+                          labels: habitdaysOfTheWeeksList,
+                          onTap: (int index) {
+                            setState(() {
+                              if (!_selectedDaysOfTheWeek.contains(
+                                habitdaysOfTheWeeksList[index].label,
+                              )) {
+                                _selectedDaysOfTheWeek.add(
+                                  habitdaysOfTheWeeksList[index].label,
+                                );
+                              } else {
+                                _selectedDaysOfTheWeek.remove(
+                                  habitdaysOfTheWeeksList[index].label,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ] else if (_selectedRepeatIndex == 1) ...[
+                        HabitWeeklyPickerWidget(
+                          labels: habitnumberOfDaysList,
+                          onTap: (int index) {
+                            setState(() {
+                              _selectedNumberOfDays = index;
+                            });
+                          },
+                          selectedLabel: _selectedNumberOfDays,
+                        ),
+                      ] else ...[
+                        SizedBox(height: 15.0),
+                        HabitMonthlyPickerWidget(
+                          selectedDates: _selectedDates,
+                          onValueChange: (List<DateTime> dates) {
+                            setState(() {
+                              _selectedDates = [...dates];
+                            });
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
 
-              ColorPicker(
-                selected: _selecteColor,
-                onTap: (value) {
-                  setState(() {
-                    _selecteColor = value;
-                  });
-                },
-              ),
-
-              Column(
-                children: [
                   SizedBox(
                     width: double.infinity,
-                    child: LabelInput(
-                      label: "Repeate",
-                      child: HomePageFilterToggleWidget(
-                        currentIndex: _selectedRepeatIndex,
-                        horizontalPadding: 30.0,
-                        verticalPadding: 10.0,
-                        labels: _repeatList,
-                        onPressed: (index) {
+                    child: Column(
+                      spacing: AppSizes.defaultBtwItems,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Dot it at:'),
+                        HomePageFilterToggleWidget(
+                          currentIndex: _selectedDoItAt,
+                          horizontalPadding: 30.0,
+                          verticalPadding: 10.0,
+                          labels: habitScheduleList,
+                          onPressed: (index) {
+                            setState(() {
+                              _selectedDoItAt = index;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Set Reminder'),
+                      Transform.scale(
+                        scale: 0.7,
+                        child: _switch(isSetReminderOn, (value) {
                           setState(() {
-                            _selectedRepeatIndex = index;
+                            isSetReminderOn = value;
                           });
-                        },
+                        }),
                       ),
-                    ),
-                  ),
-                  if (_selectedRepeatIndex == 0) ...[
-                    DailyPickerWidget(
-                      isCheckAllDay: isCheckAllDay,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          for (String day in dayList) {
-                            _selectedDaysOfTheWeek.add(day);
-                          }
-                          isCheckAllDay = value!;
-                        });
-                      },
-                      selectedLabels: _selectedDaysOfTheWeek,
-                      labels: _daysOfTheWeek,
-                      onTap: (int index) {
-                        setState(() {
-                          if (!_selectedDaysOfTheWeek.contains(
-                            _daysOfTheWeek[index].label,
-                          )) {
-                            _selectedDaysOfTheWeek.add(
-                              _daysOfTheWeek[index].label,
-                            );
-                          } else {
-                            _selectedDaysOfTheWeek.remove(
-                              _daysOfTheWeek[index].label,
-                            );
-                          }
-                        });
-                      },
-                    ),
-                  ] else if (_selectedRepeatIndex == 1) ...[
-                    HabitWeeklyPickerWidget(
-                      labels: _numberOfDays,
-                      onTap: (int index) {
-                        setState(() {
-                          _selectedNumberOfDays = index;
-                        });
-                      },
-                      selectedLabel: _selectedNumberOfDays,
-                    ),
-                  ] else ...[
-                    SizedBox(height: 15.0),
-                    HabitMonthlyPickerWidget(
-                      selectedDates: _selectedDates,
-                      onValueChange: (List<DateTime> dates) {
-                        setState(() {
-                          _selectedDates = [...dates];
-                        });
-                      },
-                    ),
-                  ],
-                ],
-              ),
-
-              SizedBox(
-                width: double.infinity,
-                child: Column(
-                  spacing: AppSizes.defaultBtwItems,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Dot it at:'),
-                    HomePageFilterToggleWidget(
-                      currentIndex: _selectedDoItAt,
-                      horizontalPadding: 30.0,
-                      verticalPadding: 10.0,
-                      labels: _doItAtList,
-                      onPressed: (index) {
-                        setState(() {
-                          _selectedDoItAt = index;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Set Reminder'),
-                  Transform.scale(
-                    scale: 0.7,
-                    child: _switch(isSetReminderOn, (value) {
-                      setState(() {
-                        isSetReminderOn = value;
-                      });
-                    }),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: FooterAppBar(
-        child: ElevatedButton(onPressed: () {}, child: Text('Save')),
+        child: ElevatedButton(
+          onPressed: () => onSave(context),
+          child: Text('Save'),
+        ),
       ),
     );
   }
