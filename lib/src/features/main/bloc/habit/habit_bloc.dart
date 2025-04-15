@@ -1,15 +1,20 @@
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/strings/habit_constants.dart';
+import 'package:habitly/src/data/failure/failure.dart';
 import 'package:habitly/src/data/model/habit_model.dart';
+import 'package:habitly/src/data/repositories/habit_repo.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 part 'habit_event.dart';
 part 'habit_state.dart';
 
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
-  HabitBloc() : super(HabitInitial()) {
+  final HabitRepository _habitRepository;
+
+  HabitBloc(this._habitRepository) : super(HabitInitial()) {
     on<UpdateHabitStatus>(_onUpdatHabitStatus);
     on<OnDragHabitContainer>(_onDragHabitContainer);
     on<OnMounted>(_onMounted);
@@ -32,24 +37,34 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     );
   }
 
-  void _onMounted(OnMounted event, Emitter<HabitState> emit) {
-    emit(
-      HabitUpdated(
-        habits: state.habits,
-        todoHabit:
-            state.habits
-                .where((habit) => habit.status == HabitStatus.todo)
-                .toList(),
-        completedHabit:
-            state.habits
-                .where((habit) => habit.status == HabitStatus.completed)
-                .toList(),
-        skippedHabits:
-            state.habits
-                .where((habit) => habit.status == HabitStatus.skipped)
-                .toList(),
-        hasMounted: true,
-      ),
+  void _onMounted(OnMounted event, Emitter<HabitState> emit) async {
+    final Either<List<Habit>, Failure> response =
+        await _habitRepository.fetchHabit();
+
+    response.fold(
+      (List<Habit> habitList) {
+        emit(
+          HabitUpdated(
+            habits: habitList,
+            todoHabit:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.todo)
+                    .toList(),
+            completedHabit:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.completed)
+                    .toList(),
+            skippedHabits:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.skipped)
+                    .toList(),
+            hasMounted: true,
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
     );
   }
 

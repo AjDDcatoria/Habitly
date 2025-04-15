@@ -1,0 +1,48 @@
+{
+    "habits" : [
+        {
+            "id": "1",
+            "title": "Set Small Goals",
+            "icon": "🎯",
+            "bgColor": "creamOrange",
+            "status": "todo",
+            "schedule": "morning",
+            "repeate": "daily",
+            "repeateValues": ["M", "F"],
+            "reminder": true
+        },
+        {
+            "id": "2",
+            "title": "Work",
+            "icon": "🏆",
+            "bgColor": "periwinkle",
+            "status": "todo",
+            "schedule": "morning",
+            "repeate": "weekly",
+            "repeateValues": ["2"],
+            "reminder": true
+        },
+        {
+            "id": "3",
+            "title": "Meditation",
+            "icon": "😇",
+            "bgColor": "mintGreen",
+            "status": "skipped",
+            "schedule": "afternoon",
+            "repeate": "weekly",
+            "repeateValues": ["4"],
+            "reminder": true
+        },
+        {
+            "id": "4",
+            "title": "Basketball",
+            "icon": "🏀",
+            "bgColor": "peach",
+            "status": "completed",
+            "schedule": "evening",
+            "repeate": "daily",
+            "repeateValues": ["M","F"],
+            "reminder": true
+        }
+    ]
+}
