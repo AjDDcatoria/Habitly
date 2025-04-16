@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/strings/habit_constants.dart';
-import 'package:habitly/src/data/failure/failure.dart';
+import 'package:habitly/src/data/response/failure.dart';
 import 'package:habitly/src/data/model/habit_model.dart';
 import 'package:habitly/src/data/repositories/habit_repo.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -22,24 +21,24 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<OnAddHabit>(_onAddHabit);
   }
 
-  void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) {
-    event.habit.id = state.habits.length.toString();
-    state.habits.insert(0, event.habit);
-    state.todoHabit.insert(0, event.habit);
-
-    emit(
-      HabitUpdated(
-        habits: state.habits,
-        todoHabit: state.todoHabit,
-        skippedHabits: state.skippedHabits,
-        completedHabit: state.completedHabit,
-      ),
-    );
+  void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) async {
+    final response = await _habitRepository.createHabit(event.habit);
+    response.fold((Habit newHabit) {
+      state.habits.add(newHabit);
+      state.todoHabit.add(newHabit);
+      emit(
+        HabitUpdated(
+          habits: state.habits,
+          todoHabit: state.todoHabit,
+          skippedHabits: state.skippedHabits,
+          completedHabit: state.completedHabit,
+        ),
+      );
+    }, (Failure error) => print(error));
   }
 
   void _onMounted(OnMounted event, Emitter<HabitState> emit) async {
-    final Either<List<Habit>, Failure> response =
-        await _habitRepository.fetchHabit();
+    final response = await _habitRepository.fetchHabit();
 
     response.fold(
       (List<Habit> habitList) {
@@ -58,7 +57,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                 habitList
                     .where((habit) => habit.status == HabitStatus.skipped)
                     .toList(),
-            hasMounted: true,
           ),
         );
       },

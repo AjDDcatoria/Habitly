@@ -3,7 +3,9 @@ import 'package:habitly/app.dart';
 import 'package:habitly/src/data/repositories/habit_repo.dart';
 import 'package:habitly/src/data/services/habit_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final HabitService habitService = HabitService();
   final HabitRepository habitRepository = HabitRepository(habitService);
   runApp(App(habitRepository: habitRepository));

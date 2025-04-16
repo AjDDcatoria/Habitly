@@ -35,6 +35,20 @@ class Habit {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'icon': icon,
+      'bgColor': bgColor,
+      'status': _statusToString(status),
+      'schedule': _scheduleToString(schedule),
+      'repeate': _repeateToString(repeate),
+      'repeateValues': repeateValues,
+      'reminder': reminder,
+    };
+  }
+
   static HabitStatus _stringToStatus(String value) {
     switch (value) {
       case 'todo':
@@ -71,6 +85,39 @@ class Habit {
         return HabitRepeate.monthly;
       default:
         throw Exception('Unknown HabitRepeate: $value');
+    }
+  }
+
+  static String _statusToString(HabitStatus status) {
+    switch (status) {
+      case HabitStatus.todo:
+        return 'todo';
+      case HabitStatus.skipped:
+        return 'skipped';
+      case HabitStatus.completed:
+        return 'completed';
+    }
+  }
+
+  static String _scheduleToString(HabitSchedule schedule) {
+    switch (schedule) {
+      case HabitSchedule.morning:
+        return 'morning';
+      case HabitSchedule.afternoon:
+        return 'afternoon';
+      case HabitSchedule.evening:
+        return 'evening';
+    }
+  }
+
+  static String _repeateToString(HabitRepeate repeate) {
+    switch (repeate) {
+      case HabitRepeate.daily:
+        return 'daily';
+      case HabitRepeate.weekly:
+        return 'weekly';
+      case HabitRepeate.monthly:
+        return 'monthly';
     }
   }
 }
