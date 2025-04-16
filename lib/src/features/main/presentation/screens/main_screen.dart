@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/features/main/presentation/pages/home_page.dart';
-import 'package:habitly/src/features/main/presentation/pages/mood_state.dart';
 import 'package:habitly/src/features/main/presentation/pages/my_habits_page.dart';
-import 'package:habitly/src/features/main/presentation/pages/report_page.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,12 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    MoodStatPage(),
-    ReportPage(),
-    MyHabitPage(),
-  ];
+  final List<Widget> _pages = const [HomePage(), MyHabitPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +37,6 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Iconsax.home_2),
             label: 'Home',
             tooltip: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_emotions_outlined),
-            label: 'Mood State',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.activity_copy),
-            label: 'Report',
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconsax.category_copy),
