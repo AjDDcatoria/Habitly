@@ -5,11 +5,13 @@ class MainScreenAppBarWidget extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final List<Widget> actions;
+  final PreferredSizeWidget? bottom;
 
   const MainScreenAppBarWidget({
     super.key,
     required this.title,
     required this.actions,
+    this.bottom,
   });
 
   @override
@@ -26,6 +28,7 @@ class MainScreenAppBarWidget extends StatelessWidget
       centerTitle: true,
       title: Text(title, style: Theme.of(context).textTheme.headlineSmall),
       actions: actions,
+      bottom: bottom,
     );
   }
 }

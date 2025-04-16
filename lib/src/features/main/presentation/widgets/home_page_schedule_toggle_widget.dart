@@ -18,7 +18,6 @@ class HomePageScheduleToggleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
       child: ToggleSwitch(
         initialLabelIndex: currentIndex,

@@ -22,7 +22,7 @@ class HomePageFilterToggleWidget extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingLg),
-      child: Row(
+      child: Wrap(
         spacing: AppSizes.defaultBtwItems,
         children: List.generate(labels.length, (index) {
           return index == currentIndex
