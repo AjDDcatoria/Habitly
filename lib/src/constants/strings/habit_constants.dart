@@ -8,7 +8,7 @@ final List<String> habitScheduleFilters = [
   'Evening',
 ];
 
-final List<String> habitRepeateList = ['Daily', 'Weekly', 'Monthly'];
+final List<String> habitRepeateList = ['Daily', 'Weekly'];
 final List<DayTitles> habitdaysOfTheWeeksList = [
   DayTitles(title: 'S', label: 'sunday'),
   DayTitles(title: 'M', label: 'monday'),

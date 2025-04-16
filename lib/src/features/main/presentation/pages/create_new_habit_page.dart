@@ -11,7 +11,6 @@ import 'package:habitly/src/data/model/habit_model.dart';
 import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main/presentation/widgets/color_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/daily_picker_widget.dart';
-import 'package:habitly/src/features/main/presentation/widgets/habit_monthly_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/habit_weekly_picker_widget.dart';
 import 'package:habitly/src/features/main/presentation/widgets/home_page_filter_toggle_widget.dart';
 import 'package:habitly/src/themes/theme.dart';
@@ -38,7 +37,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
   final Set _selectedDaysOfTheWeek = <String>{};
   int _selectedNumberOfDays = 0;
   int? _selectedIcon;
-  List<DateTime> _selectedDates = [];
   int _selectedDoItAt = 0;
   int? _selecteColor;
   bool isCheckAllDay = false;
@@ -71,8 +69,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
       case 1:
         repeateValues = [habitnumberOfDaysList[_selectedNumberOfDays]];
         break;
-      default:
-        repeateValues = _selectedDates;
     }
     bloc.add(
       OnAddHabit(
@@ -227,7 +223,7 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                             });
                           },
                         ),
-                      ] else if (_selectedRepeatIndex == 1) ...[
+                      ] else ...[
                         HabitWeeklyPickerWidget(
                           labels: habitnumberOfDaysList,
                           onTap: (int index) {
@@ -236,16 +232,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                             });
                           },
                           selectedLabel: _selectedNumberOfDays,
-                        ),
-                      ] else ...[
-                        SizedBox(height: 15.0),
-                        HabitMonthlyPickerWidget(
-                          selectedDates: _selectedDates,
-                          onValueChange: (List<DateTime> dates) {
-                            setState(() {
-                              _selectedDates = [...dates];
-                            });
-                          },
                         ),
                       ],
                     ],

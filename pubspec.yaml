@@ -42,7 +42,6 @@ dependencies:
   flutter_otp_text_field: ^1.1.0+2
   iconsax_flutter: ^1.0.0
   toggle_switch: ^2.3.0
-  calendar_date_picker2: ^2.0.0
   flutter_bloc: ^9.1.0
   dartz: ^0.10.1
   localstore: ^1.4.0
