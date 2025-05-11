@@ -25,4 +25,22 @@ class HabitRepository {
       return Right(Failure(e));
     }
   }
+
+  Future<Either<Habit, Failure>> getHabitById(String id) async {
+    try {
+      final Habit habit = await _habitService.getHabitById(id);
+      return Left(habit);
+    } catch (e) {
+      return Right(Failure(e));
+    }
+  }
+
+  Future<Either<void, Failure>> deleteHabit(String id) async {
+    try {
+      await _habitService.deleteHabit(id);
+      return Left(null);
+    } catch (e) {
+      return Right(Failure(e));
+    }
+  }
 }

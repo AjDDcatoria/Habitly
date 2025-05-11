@@ -7,6 +7,7 @@ sealed class HabitState {
   final List<Habit> todoHabit;
   final List<Habit> skippedHabits;
   final List<Habit> completedHabit;
+  final Habit? selectedViewHabit;
 
   final bool hasMounted;
 
@@ -24,6 +25,7 @@ sealed class HabitState {
     this.skippedHabits = const [],
     this.completedHabit = const [],
     this.todoHabit = const [],
+    this.selectedViewHabit,
     this.selectedRepeate = 0,
     this.selectedSchedule = 0,
     this.hasMounted = false,
@@ -37,52 +39,7 @@ sealed class HabitState {
 final class HabitInitial extends HabitState {
   HabitInitial()
     : super(
-        habits: [
-          Habit(
-            id: '1',
-            title: 'Set Small Goals',
-            icon: '🎯',
-            bgColor: 'creamOrange',
-            status: HabitStatus.todo,
-            schedule: HabitSchedule.morning,
-            repeate: HabitRepeate.daily,
-            repeateValues: ['M', 'F'],
-            reminder: true,
-          ),
-          Habit(
-            id: '2',
-            title: 'Work',
-            icon: '🏆',
-            bgColor: 'periwinkle',
-            status: HabitStatus.todo,
-            schedule: HabitSchedule.morning,
-            repeate: HabitRepeate.weekly,
-            repeateValues: ['M', 'F'],
-            reminder: true,
-          ),
-          Habit(
-            id: '3',
-            title: 'Meditation',
-            icon: '😇',
-            bgColor: 'mintGreen',
-            status: HabitStatus.skipped,
-            schedule: HabitSchedule.afternoon,
-            repeate: HabitRepeate.weekly,
-            repeateValues: ['M', 'F'],
-            reminder: true,
-          ),
-          Habit(
-            id: '4',
-            title: 'Basketball',
-            icon: '🏀',
-            bgColor: 'peach',
-            status: HabitStatus.completed,
-            schedule: HabitSchedule.evening,
-            repeate: HabitRepeate.daily,
-            repeateValues: ['M', 'F'],
-            reminder: true,
-          ),
-        ],
+        habits: [],
         completedHabit: [],
         todoHabit: [],
         skippedHabits: [],
@@ -98,6 +55,7 @@ final class HabitUpdated extends HabitState {
     super.todoHabit,
     super.completedHabit,
     super.skippedHabits,
+    super.selectedViewHabit,
     super.hasMounted,
     super.alignment,
     super.bgColor,

@@ -23,4 +23,16 @@ class HabitService {
 
     return habit;
   }
+
+  Future<Habit> getHabitById(String id) async {
+    final habit = await db.collection('habits').doc(id).get();
+
+    if (habit == null) throw Exception('Habit not found');
+
+    return Habit.fromJson(habit);
+  }
+
+  Future<void> deleteHabit(String id) async {
+    await db.collection('habits').doc(id).delete();
+  }
 }

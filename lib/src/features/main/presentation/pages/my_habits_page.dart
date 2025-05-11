@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habitly/src/common/habit_button.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main/presentation/widgets/main_screen_appbar_widget.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 
 class MyHabitPage extends StatefulWidget {
   const MyHabitPage({super.key});
@@ -35,6 +37,14 @@ class _MyHabitPageState extends State<MyHabitPage> {
               itemBuilder: (context, index) {
                 final habit = state.habits[index];
                 return HabitButton(
+                  onPressed: () {
+                    context.push(
+                      Uri(
+                        path: RouteNames.viewHabit,
+                        queryParameters: {'id': habit.id},
+                      ).toString(),
+                    );
+                  },
                   icon: habit.icon,
                   title: habit.title,
                   color: habit.bgColor,

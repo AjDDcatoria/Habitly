@@ -7,6 +7,7 @@ class HabitButton extends StatefulWidget {
   final String title;
   final String color;
   final String? labeled;
+  final Function()? onPressed;
 
   const HabitButton({
     super.key,
@@ -14,6 +15,7 @@ class HabitButton extends StatefulWidget {
     required this.title,
     required this.color,
     this.labeled,
+    this.onPressed,
   });
 
   @override
@@ -73,7 +75,7 @@ class _HabitButtonState extends State<HabitButton> {
   Widget build(BuildContext context) {
     return WideContainer(
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () => widget.onPressed!(),
         label: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

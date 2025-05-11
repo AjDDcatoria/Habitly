@@ -19,6 +19,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<OnMounted>(_onMounted);
     on<UpdateFilter>(_onUpdateFilter);
     on<OnAddHabit>(_onAddHabit);
+    on<GetHabitById>(_getHabitById);
+    on<OnDeleteHabit>(_onDeleteHabit);
   }
 
   void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) async {
@@ -217,5 +219,50 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         ),
       );
     }
+  }
+
+  _getHabitById(GetHabitById event, Emitter<HabitState> emit) async {
+    final response = await _habitRepository.getHabitById(event.habitId);
+
+    response.fold(
+      (Habit habit) {
+        emit(
+          HabitUpdated(
+            habits: state.habits,
+            todoHabit: state.todoHabit,
+            skippedHabits: state.skippedHabits,
+            completedHabit: state.completedHabit,
+            selectedViewHabit: habit,
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
+    );
+  }
+
+  _onDeleteHabit(OnDeleteHabit event, Emitter<HabitState> emit) async {
+    final response = await _habitRepository.deleteHabit(event.habitId);
+    response.fold(
+      (void _) {
+        state.habits.removeWhere((habit) => habit.id == event.habitId);
+        state.todoHabit.removeWhere((habit) => habit.id == event.habitId);
+        state.skippedHabits.removeWhere((habit) => habit.id == event.habitId);
+        state.completedHabit.removeWhere((habit) => habit.id == event.habitId);
+
+        emit(
+          HabitUpdated(
+            habits: state.habits,
+            todoHabit: state.todoHabit,
+            skippedHabits: state.skippedHabits,
+            completedHabit: state.completedHabit,
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
+    );
   }
 }

@@ -30,3 +30,15 @@ class OnAddHabit extends HabitEvent {
 
   OnAddHabit(this.habit);
 }
+
+class GetHabitById extends HabitEvent {
+  final String habitId;
+
+  GetHabitById(this.habitId);
+}
+
+class OnDeleteHabit extends HabitEvent {
+  final String habitId;
+
+  OnDeleteHabit(this.habitId);
+}
