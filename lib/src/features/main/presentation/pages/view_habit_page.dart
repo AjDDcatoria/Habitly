@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class ViewHabitPage extends StatefulWidget {
@@ -44,12 +45,19 @@ class _ViewHabitPageState extends State<ViewHabitPage> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: const Text('Habit'),
+            title: const Text(
+              'Habit',
+              style: TextStyle(fontSize: AppSizes.fontXl),
+            ),
             actions: <Widget>[
               IconButton(
                 onPressed: () {
-                  AlertDialog(title: Text('Edit habit'));
-                  print('Edit habit: ${habit.title}');
+                  context.push(
+                    Uri(
+                      path: RouteNames.updateHabit,
+                      queryParameters: {'id': habit.id},
+                    ).toString(),
+                  );
                 },
                 icon: Icon(Iconsax.edit_2_copy, color: AppColors.darkBorder),
               ),

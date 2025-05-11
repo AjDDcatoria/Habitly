@@ -120,6 +120,15 @@ class Habit {
         return 'monthly';
     }
   }
+
+  copyWith({
+    required String icon,
+    required bgColor,
+    required String title,
+    required HabitRepeate repeate,
+    required List repeateValues,
+    required bool reminder,
+  }) {}
 }
 
 enum HabitStatus { todo, skipped, completed }

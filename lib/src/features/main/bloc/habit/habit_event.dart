@@ -42,3 +42,9 @@ class OnDeleteHabit extends HabitEvent {
 
   OnDeleteHabit(this.habitId);
 }
+
+class OnUpdateHabit extends HabitEvent {
+  final Habit habit;
+
+  OnUpdateHabit(this.habit);
+}

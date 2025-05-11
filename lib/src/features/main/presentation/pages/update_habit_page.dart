@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitly/src/common/footer_app_bar.dart';
 import 'package:habitly/src/common/label_input.dart';
 import 'package:habitly/src/constants/colors.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/constants/strings/habit_constants.dart';
 import 'package:habitly/src/constants/strings/icon_constants.dart';
-import 'package:habitly/src/common/footer_app_bar.dart';
 import 'package:habitly/src/data/model/habit_model.dart';
 import 'package:habitly/src/features/main/bloc/habit/habit_bloc.dart';
 import 'package:habitly/src/features/main/presentation/widgets/color_picker_widget.dart';
@@ -17,41 +17,52 @@ import 'package:habitly/src/themes/theme.dart';
 import 'package:habitly/src/utils/color_util.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-class DayTitles {
-  String title;
-  String label;
-  DayTitles({required this.title, required this.label});
-}
-
-class CreateNewHabitPage extends StatefulWidget {
-  const CreateNewHabitPage({super.key});
+class UpdateHabitPage extends StatefulWidget {
+  const UpdateHabitPage({super.key});
 
   @override
-  State<CreateNewHabitPage> createState() => _CreateNewHabitPageState();
+  State<UpdateHabitPage> createState() => _UpdateHabitPageState();
 }
 
-class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
-  late final HabitBloc bloc;
+class _UpdateHabitPageState extends State<UpdateHabitPage> {
   final TextEditingController _habitTitle = TextEditingController();
+
+  int? _selectedIcon;
+  int? _selecteColor;
   int _selectedRepeatIndex = 0;
+  bool isCheckAllDay = false;
   final Set _selectedDaysOfTheWeek = <String>{};
   int _selectedNumberOfDays = 0;
-  int? _selectedIcon;
-  int _selectedDoItAt = 0;
-  int? _selecteColor;
-  bool isCheckAllDay = false;
   bool isSetReminderOn = false;
+
+  String? habitId;
+  late final HabitBloc bloc;
 
   @override
   void initState() {
     super.initState();
     bloc = context.read<HabitBloc>();
-  }
 
-  @override
-  void dispose() {
-    _habitTitle.dispose();
-    super.dispose();
+    setState(() {
+      _selecteColor = getIndexColor(bloc.state.selectedViewHabit!.bgColor);
+      _selectedIcon = allIcons.indexOf(bloc.state.selectedViewHabit!.icon);
+      _selectedRepeatIndex = bloc.state.selectedViewHabit!.repeate.index;
+      _selectedNumberOfDays = bloc.state.selectedSchedule;
+      _habitTitle.text = bloc.state.selectedViewHabit!.title;
+
+      if (bloc.state.selectedViewHabit!.repeate.index == 1) {
+        _selectedNumberOfDays = int.parse(
+          bloc.state.selectedViewHabit!.repeateValues[0],
+        );
+      } else {
+        for (String day in bloc.state.selectedViewHabit!.repeateValues) {
+          _selectedDaysOfTheWeek.add(day);
+        }
+
+        isCheckAllDay = _selectedDaysOfTheWeek.length == 7;
+      }
+      isSetReminderOn = bloc.state.selectedViewHabit!.reminder;
+    });
   }
 
   void selectIcon(int value) {
@@ -60,113 +71,65 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
     });
   }
 
-  void onSave() {
-    dynamic repeateValues;
-    switch (_selectedRepeatIndex) {
-      case 0:
-        repeateValues = _selectedDaysOfTheWeek.toList();
-        break;
-      case 1:
-        repeateValues = [habitnumberOfDaysList[_selectedNumberOfDays]];
-        break;
-    }
-
+  void onUpdateHabit() {
     bloc.add(
-      OnAddHabit(
+      OnUpdateHabit(
         Habit(
+          id: bloc.state.selectedViewHabit!.id,
           title: _habitTitle.text,
           icon: allIcons[_selectedIcon!],
           bgColor: getColorString(_selecteColor!),
           status: HabitStatus.todo,
-          schedule: HabitSchedule.values[_selectedDoItAt],
+          schedule: HabitSchedule.values[_selectedNumberOfDays],
           repeate: HabitRepeate.values[_selectedRepeatIndex],
-          repeateValues: repeateValues,
+          repeateValues:
+              _selectedRepeatIndex == 0
+                  ? _selectedDaysOfTheWeek.toList()
+                  : [_selectedNumberOfDays.toString()],
           reminder: isSetReminderOn,
         ),
       ),
     );
-    context.pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final buttonTheme = Theme.of(context).extension<SecondaryButtonTheme>()!;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: Icon(Icons.close),
-        ),
-      ),
-      body: BlocBuilder<HabitBloc, HabitState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSizes.paddingLg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSizes.defaultBtwSections,
-                children: <Widget>[
-                  Center(
-                    child: Text(
-                      'Create new Habit',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
 
-                  LabelInput(
-                    label: 'Habit Name',
+    return BlocBuilder<HabitBloc, HabitState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Update Habit',
+              style: TextStyle(fontSize: AppSizes.fontXl),
+            ),
+            actions: <Widget>[
+              IconButton(
+                onPressed: null,
+                icon: Icon(
+                  Iconsax.trash_copy,
+                  color: AppColors.error,
+                  size: 30,
+                ),
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(AppSizes.paddingLg),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: AppSizes.defaultBtwItems,
+                children: <Widget>[
+                  _label(
+                    title: 'Task Name',
                     child: TextField(
                       controller: _habitTitle,
                       decoration: InputDecoration(hintText: 'Habit Name'),
                     ),
                   ),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Icon', style: TextStyle(fontSize: 16.0)),
-                            TextButton.icon(
-                              onPressed: () {
-                                _showModalBottomSheetIcons(
-                                  context,
-                                  buttonTheme,
-                                );
-                              },
-                              iconAlignment: IconAlignment.end,
-                              icon: Icon(
-                                Iconsax.arrow_right_1_copy,
-                                size: 22.0,
-                              ),
-                              label: Text(
-                                'View all',
-                                style: TextStyle(fontSize: 16.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            spacing: 12.0,
-                            children: List.generate(allIcons.length, (
-                              int index,
-                            ) {
-                              return _iconButton(index, (value) {
-                                selectIcon(value);
-                              }, context);
-                            }),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                  _iconList(context, buttonTheme),
                   ColorPicker(
                     selected: _selecteColor,
                     onTap: (value) {
@@ -237,28 +200,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                       ],
                     ],
                   ),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      spacing: AppSizes.defaultBtwItems,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Dot it at:'),
-                        HomePageFilterToggleWidget(
-                          currentIndex: _selectedDoItAt,
-                          horizontalPadding: 30.0,
-                          verticalPadding: 10.0,
-                          labels: habitScheduleList,
-                          onPressed: (index) {
-                            setState(() {
-                              _selectedDoItAt = index;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -276,14 +217,72 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
                 ],
               ),
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: FooterAppBar(
-        child: ElevatedButton(onPressed: () => onSave(), child: Text('Save')),
+          ),
+          bottomNavigationBar: FooterAppBar(
+            child: ElevatedButton(
+              onPressed: () {
+                onUpdateHabit();
+                context.pop();
+                context.pop();
+              },
+              child: Text('Save'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  SizedBox _iconList(BuildContext context, SecondaryButtonTheme buttonTheme) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Icon', style: TextStyle(fontSize: 16.0)),
+              TextButton.icon(
+                onPressed: () {
+                  _showModalBottomSheetIcons(context, buttonTheme);
+                },
+                iconAlignment: IconAlignment.end,
+                icon: Icon(Iconsax.arrow_right_1_copy, size: 22.0),
+                label: Text('View all', style: TextStyle(fontSize: 16.0)),
+              ),
+            ],
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 12.0,
+              children: List.generate(allIcons.length, (int index) {
+                return _iconButton(index, (value) {
+                  selectIcon(value);
+                }, context);
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }
+
+  Column _label({required String title, required Widget child}) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        title,
+        style: TextStyle(
+          fontSize: AppSizes.fontLg,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      const SizedBox(height: AppSizes.defaultBtwItems),
+      child,
+    ],
+  );
 
   Future<dynamic> _showModalBottomSheetIcons(
     BuildContext context,
@@ -366,26 +365,6 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
     );
   }
 
-  Switch _switch(bool switchValue, ValueChanged onChange) {
-    return Switch(
-      value: switchValue,
-      inactiveTrackColor: Colors.grey[400],
-      inactiveThumbColor: Colors.white,
-      activeColor: const Color.fromARGB(255, 56, 6, 236),
-      thumbIcon: MaterialStateProperty.resolveWith<Icon>((
-        final Set<MaterialState> states,
-      ) {
-        return const Icon(Icons.circle, size: 25, color: Colors.white);
-      }),
-      trackOutlineColor: MaterialStateProperty.resolveWith((
-        final Set<MaterialState> states,
-      ) {
-        return Colors.transparent;
-      }),
-      onChanged: onChange,
-    );
-  }
-
   OutlinedButton _iconButton(
     int index,
     Function onChange,
@@ -405,6 +384,26 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
         allIcons[index],
         style: Theme.of(context).textTheme.headlineLarge,
       ),
+    );
+  }
+
+  Switch _switch(bool switchValue, ValueChanged onChange) {
+    return Switch(
+      value: switchValue,
+      inactiveTrackColor: Colors.grey[400],
+      inactiveThumbColor: Colors.white,
+      activeColor: const Color.fromARGB(255, 56, 6, 236),
+      thumbIcon: MaterialStateProperty.resolveWith<Icon>((
+        final Set<MaterialState> states,
+      ) {
+        return const Icon(Icons.circle, size: 25, color: Colors.white);
+      }),
+      trackOutlineColor: MaterialStateProperty.resolveWith((
+        final Set<MaterialState> states,
+      ) {
+        return Colors.transparent;
+      }),
+      onChanged: onChange,
     );
   }
 }

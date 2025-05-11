@@ -43,4 +43,13 @@ class HabitRepository {
       return Right(Failure(e));
     }
   }
+
+  Future<Either<void, Failure>> updateHabit(Habit habit) async {
+    try {
+      await _habitService.updateHabit(habit);
+      return Left(null);
+    } catch (e) {
+      return Right(Failure(e));
+    }
+  }
 }

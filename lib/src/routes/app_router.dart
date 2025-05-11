@@ -15,6 +15,7 @@ final GoRouter appRouter = GoRouter(
       builder: AppRouteBuilder.createNewHabit,
     ),
     GoRoute(path: RouteNames.viewHabit, builder: AppRouteBuilder.viewHabit),
+    GoRoute(path: RouteNames.updateHabit, builder: AppRouteBuilder.updateHabit),
   ],
   redirect: (context, state) => null,
   errorBuilder:

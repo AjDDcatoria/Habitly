@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:habitly/src/features/main/presentation/pages/create_new_habit_page.dart';
+import 'package:habitly/src/features/main/presentation/pages/update_habit_page.dart';
 import 'package:habitly/src/features/main/presentation/pages/view_habit_page.dart';
 import 'package:habitly/src/features/main/presentation/screens/main_screen.dart';
 import 'package:habitly/src/features/started/screens/walk_through.dart';
@@ -20,5 +21,9 @@ class AppRouteBuilder {
 
   static Widget viewHabit(BuildContext context, GoRouterState state) {
     return const ViewHabitPage();
+  }
+
+  static Widget updateHabit(BuildContext context, GoRouterState state) {
+    return const UpdateHabitPage();
   }
 }

@@ -3,4 +3,5 @@ abstract class RouteNames {
   static const String mainScreen = '/main-screen';
   static const String createNewHabit = '/create-new-habit';
   static const String viewHabit = '/view-habit/:id';
+  static const String updateHabit = '/update-habit/:id';
 }

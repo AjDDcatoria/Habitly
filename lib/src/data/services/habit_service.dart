@@ -35,4 +35,9 @@ class HabitService {
   Future<void> deleteHabit(String id) async {
     await db.collection('habits').doc(id).delete();
   }
+
+  Future<void> updateHabit(Habit habit) async {
+    // print(habit.toJson());
+    await db.collection('habits').doc(habit.id).set(habit.toJson());
+  }
 }

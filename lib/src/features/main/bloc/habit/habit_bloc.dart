@@ -21,6 +21,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<OnAddHabit>(_onAddHabit);
     on<GetHabitById>(_getHabitById);
     on<OnDeleteHabit>(_onDeleteHabit);
+    on<OnUpdateHabit>(_onUpdateHabit);
   }
 
   void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) async {
@@ -250,6 +251,29 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         state.todoHabit.removeWhere((habit) => habit.id == event.habitId);
         state.skippedHabits.removeWhere((habit) => habit.id == event.habitId);
         state.completedHabit.removeWhere((habit) => habit.id == event.habitId);
+
+        emit(
+          HabitUpdated(
+            habits: state.habits,
+            todoHabit: state.todoHabit,
+            skippedHabits: state.skippedHabits,
+            completedHabit: state.completedHabit,
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
+    );
+  }
+
+  _onUpdateHabit(OnUpdateHabit event, Emitter<HabitState> emit) async {
+    final response = await _habitRepository.updateHabit(event.habit);
+
+    response.fold(
+      (void _) {
+        state.habits.removeWhere((habit) => habit.id == event.habit.id);
+        state.habits.add(event.habit);
 
         emit(
           HabitUpdated(

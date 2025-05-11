@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habitly/src/common/habit_button.dart';
 import 'package:habitly/src/constants/sizes.dart';
 import 'package:habitly/src/data/model/habit_model.dart';
+import 'package:habitly/src/routes/routes_names.dart';
 
 class CurrentHabitListWidget extends StatefulWidget {
   final List<Habit> habitList;
@@ -69,6 +71,14 @@ class CurrentHabitListWidgetState extends State<CurrentHabitListWidget> {
             ),
           ),
           child: HabitButton(
+            onPressed: () {
+              context.push(
+                Uri(
+                  path: RouteNames.viewHabit,
+                  queryParameters: {'id': habit.id},
+                ).toString(),
+              );
+            },
             icon: habit.icon,
             title: habit.title,
             color: habit.bgColor,
