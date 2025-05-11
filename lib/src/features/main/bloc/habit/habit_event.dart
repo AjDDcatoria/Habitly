@@ -48,3 +48,5 @@ class OnUpdateHabit extends HabitEvent {
 
   OnUpdateHabit(this.habit);
 }
+
+class OnFetchCurrentScheduleHabit extends HabitEvent {}

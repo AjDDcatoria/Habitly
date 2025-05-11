@@ -7,6 +7,7 @@ sealed class HabitState {
   final List<Habit> todoHabit;
   final List<Habit> skippedHabits;
   final List<Habit> completedHabit;
+  final List<Habit> currentScheduleHabit;
   final Habit? selectedViewHabit;
 
   final bool hasMounted;
@@ -24,6 +25,7 @@ sealed class HabitState {
     this.habits = const [],
     this.skippedHabits = const [],
     this.completedHabit = const [],
+    this.currentScheduleHabit = const [],
     this.todoHabit = const [],
     this.selectedViewHabit,
     this.selectedRepeate = 0,
@@ -55,6 +57,7 @@ final class HabitUpdated extends HabitState {
     super.todoHabit,
     super.completedHabit,
     super.skippedHabits,
+    super.currentScheduleHabit,
     super.selectedViewHabit,
     super.hasMounted,
     super.alignment,

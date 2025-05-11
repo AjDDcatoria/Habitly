@@ -53,14 +53,17 @@ class _WalkThroughState extends State<WalkThrough>
             },
             children: <Widget>[
               WalkThroughPageWidget(
+                imagePath: "assets/images/firstdisplay.png",
                 title: WalkThroughStrings.page1Title,
                 subtitle: WalkThroughStrings.page1Subtitle,
               ),
               WalkThroughPageWidget(
+                imagePath: "assets/images/seconddisplay.png",
                 title: WalkThroughStrings.page2Title,
                 subtitle: WalkThroughStrings.page2Subtitle,
               ),
               WalkThroughPageWidget(
+                imagePath: "assets/images/thirddisplay.png",
                 title: WalkThroughStrings.page3Title,
                 subtitle: WalkThroughStrings.page3Subtitle,
               ),

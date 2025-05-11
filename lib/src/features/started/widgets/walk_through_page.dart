@@ -5,11 +5,13 @@ import 'package:habitly/src/constants/sizes.dart';
 class WalkThroughPageWidget extends StatelessWidget {
   final String title;
   final String subtitle;
+  final String imagePath;
 
   const WalkThroughPageWidget({
     super.key,
     required this.title,
     required this.subtitle,
+    required this.imagePath,
   });
 
   @override
@@ -20,13 +22,19 @@ class WalkThroughPageWidget extends StatelessWidget {
         Transform.scale(
           scale: 7,
           origin: Offset(0, 55),
-          child: Container(
-            height: 200,
-            width: 200,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(300),
-            ),
+          child: Stack(
+            children: [
+              Container(
+                height: 210,
+                width: 62,
+                decoration: BoxDecoration(color: AppColors.primary),
+              ),
+              Positioned(
+                top: 150,
+                left: -6,
+                child: Image.asset(imagePath, height: 130),
+              ),
+            ],
           ),
         ),
         Container(

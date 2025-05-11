@@ -22,6 +22,39 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<GetHabitById>(_getHabitById);
     on<OnDeleteHabit>(_onDeleteHabit);
     on<OnUpdateHabit>(_onUpdateHabit);
+    on<OnFetchCurrentScheduleHabit>(_onFetchCurrentScheduleHabit);
+  }
+
+  void _onFetchCurrentScheduleHabit(
+    OnFetchCurrentScheduleHabit event,
+    Emitter<HabitState> emit,
+  ) async {
+    final response = await _habitRepository.fetchCurrentScheduleHabit();
+    response.fold(
+      (List<Habit> habitList) {
+        emit(
+          HabitUpdated(
+            habits: state.habits,
+            currentScheduleHabit: habitList,
+            todoHabit:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.todo)
+                    .toList(),
+            completedHabit:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.completed)
+                    .toList(),
+            skippedHabits:
+                habitList
+                    .where((habit) => habit.status == HabitStatus.skipped)
+                    .toList(),
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
+    );
   }
 
   void _onAddHabit(OnAddHabit event, Emitter<HabitState> emit) async {
@@ -45,23 +78,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
 
     response.fold(
       (List<Habit> habitList) {
-        emit(
-          HabitUpdated(
-            habits: habitList,
-            todoHabit:
-                habitList
-                    .where((habit) => habit.status == HabitStatus.todo)
-                    .toList(),
-            completedHabit:
-                habitList
-                    .where((habit) => habit.status == HabitStatus.completed)
-                    .toList(),
-            skippedHabits:
-                habitList
-                    .where((habit) => habit.status == HabitStatus.skipped)
-                    .toList(),
-          ),
-        );
+        emit(HabitUpdated(habits: habitList));
       },
       (Failure error) {
         print(error.message);
@@ -69,25 +86,43 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     );
   }
 
-  void _onUpdatHabitStatus(UpdateHabitStatus event, Emitter<HabitState> emit) {
-    final habit = state.habits.firstWhere((h) => h.id == event.habitId);
-    habit.status = event.status;
+  void _onUpdatHabitStatus(
+    UpdateHabitStatus event,
+    Emitter<HabitState> emit,
+  ) async {
+    final response = await _habitRepository.updateHabitStatus(
+      event.habitId,
+      event.status,
+    );
 
-    state.todoHabit.remove(habit);
+    response.fold(
+      (void _) {
+        final habit = state.currentScheduleHabit.firstWhere(
+          (h) => h.id == event.habitId,
+        );
+        habit.status = event.status;
 
-    if (event.status == HabitStatus.completed) {
-      state.completedHabit.insert(0, habit);
-    } else {
-      state.skippedHabits.insert(0, habit);
-    }
+        state.todoHabit.remove(habit);
 
-    emit(
-      HabitUpdated(
-        habits: state.habits,
-        todoHabit: state.todoHabit,
-        skippedHabits: state.skippedHabits,
-        completedHabit: state.completedHabit,
-      ),
+        if (event.status == HabitStatus.completed) {
+          state.completedHabit.insert(0, habit);
+        } else {
+          state.skippedHabits.insert(0, habit);
+        }
+
+        emit(
+          HabitUpdated(
+            habits: state.habits,
+            currentScheduleHabit: state.currentScheduleHabit,
+            todoHabit: state.todoHabit,
+            skippedHabits: state.skippedHabits,
+            completedHabit: state.completedHabit,
+          ),
+        );
+      },
+      (Failure error) {
+        print(error.message);
+      },
     );
   }
 
@@ -115,6 +150,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     emit(
       HabitUpdated(
         habits: state.habits,
+        currentScheduleHabit: state.currentScheduleHabit,
         todoHabit: state.todoHabit,
         skippedHabits: state.skippedHabits,
         completedHabit: state.completedHabit,
@@ -127,7 +163,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   }
 
   void _onUpdateFilter(UpdateFilter event, Emitter<HabitState> emit) {
-    final habits = state.habits;
+    final habits = state.currentScheduleHabit;
 
     List<Habit> filteredHabits = [];
 
@@ -156,6 +192,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       emit(
         HabitUpdated(
           habits: state.habits,
+          currentScheduleHabit: state.currentScheduleHabit,
           todoHabit:
               filteredHabits
                   .where((habit) => habit.status == HabitStatus.todo)
@@ -203,6 +240,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       emit(
         HabitUpdated(
           habits: state.habits,
+          currentScheduleHabit: state.currentScheduleHabit,
           todoHabit:
               filteredHabits
                   .where((habit) => habit.status == HabitStatus.todo)
@@ -251,10 +289,14 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         state.todoHabit.removeWhere((habit) => habit.id == event.habitId);
         state.skippedHabits.removeWhere((habit) => habit.id == event.habitId);
         state.completedHabit.removeWhere((habit) => habit.id == event.habitId);
+        state.currentScheduleHabit.removeWhere(
+          (habit) => habit.id == event.habitId,
+        );
 
         emit(
           HabitUpdated(
             habits: state.habits,
+            currentScheduleHabit: state.currentScheduleHabit,
             todoHabit: state.todoHabit,
             skippedHabits: state.skippedHabits,
             completedHabit: state.completedHabit,

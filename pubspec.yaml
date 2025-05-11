@@ -45,6 +45,7 @@ dependencies:
   flutter_bloc: ^9.1.0
   dartz: ^0.10.1
   localstore: ^1.4.0
+  intl: ^0.18.1
   
 
 dev_dependencies:

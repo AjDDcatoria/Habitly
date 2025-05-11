@@ -15,6 +15,19 @@ class MyHabitPage extends StatefulWidget {
 }
 
 class _MyHabitPageState extends State<MyHabitPage> {
+  late final HabitBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = context.read<HabitBloc>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!bloc.state.hasMounted) {
+        bloc.add(OnMounted());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

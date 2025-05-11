@@ -1,8 +1,28 @@
 import 'package:habitly/src/data/model/habit_model.dart';
+import 'package:intl/intl.dart';
 import 'package:localstore/localstore.dart';
 
 class HabitService {
   final db = Localstore.instance;
+
+  Future<List<Habit>> fetchCurrentScheduleHabit() async {
+    String currentDay = DateFormat('EEEE').format(DateTime.now());
+    final habitCollections = await db.collection('habits').get();
+    if (habitCollections == null) return [];
+
+    late List<Habit> habitList = [];
+
+    habitCollections.forEach((key, value) async {
+      final data = value;
+
+      final repeatValues = List<String>.from(data['repeateValues'] ?? []);
+
+      if (repeatValues.contains(currentDay.toLowerCase())) {
+        habitList.add(Habit.fromJson(data));
+      }
+    });
+    return habitList;
+  }
 
   Future<List<Habit>> fetchHabit() async {
     final habitCollections = await db.collection('habits').get();
@@ -37,7 +57,16 @@ class HabitService {
   }
 
   Future<void> updateHabit(Habit habit) async {
-    // print(habit.toJson());
     await db.collection('habits').doc(habit.id).set(habit.toJson());
+  }
+
+  Future<void> updateHabitStatus(String id, HabitStatus status) async {
+    final habit = await db.collection('habits').doc(id).get();
+
+    if (habit == null) throw Exception('Habit not found');
+
+    habit['status'] = status.name;
+
+    await db.collection('habits').doc(id).set(habit);
   }
 }

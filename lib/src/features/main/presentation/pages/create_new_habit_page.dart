@@ -85,6 +85,7 @@ class _CreateNewHabitPageState extends State<CreateNewHabitPage> {
         ),
       ),
     );
+    bloc.add(OnFetchCurrentScheduleHabit());
     context.pop();
   }
 

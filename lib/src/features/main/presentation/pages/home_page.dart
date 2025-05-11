@@ -26,11 +26,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     bloc = context.read<HabitBloc>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!bloc.state.hasMounted) {
-        bloc.add(OnMounted());
-      }
-    });
+    bloc.add(OnFetchCurrentScheduleHabit());
   }
 
   void onDrag(DismissUpdateDetails direction) {

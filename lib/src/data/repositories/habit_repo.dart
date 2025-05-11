@@ -8,6 +8,17 @@ class HabitRepository {
 
   HabitRepository(this._habitService);
 
+  Future<Either<List<Habit>, Failure>> fetchCurrentScheduleHabit() async {
+    try {
+      final habitData = await _habitService.fetchCurrentScheduleHabit();
+      // print('repo');
+      // print(habitData);
+      return Left(habitData);
+    } catch (e) {
+      return Right(Failure(e));
+    }
+  }
+
   Future<Either<List<Habit>, Failure>> fetchHabit() async {
     try {
       final habitData = await _habitService.fetchHabit();
@@ -21,6 +32,18 @@ class HabitRepository {
     try {
       final Habit newHabit = await _habitService.createHabit(habit);
       return Left(newHabit);
+    } catch (e) {
+      return Right(Failure(e));
+    }
+  }
+
+  Future<Either<void, Failure>> updateHabitStatus(
+    String id,
+    HabitStatus status,
+  ) async {
+    try {
+      await _habitService.updateHabitStatus(id, status);
+      return Left(null);
     } catch (e) {
       return Right(Failure(e));
     }
